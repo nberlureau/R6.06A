@@ -1,20 +1,32 @@
 # App
-Une application en python Flask permettant d'implémenter les fonctionnalités intelligentes du LLM
+Une application en Python **FastAPI** permettant d'implémenter les fonctionnalités intelligentes du LLM.
 
+---
 
-## Pour lancer l'application : faire cette suite de commandes : 
-### Sur Windows :
-Cloner ce repo <br>
-Se placer **dans le dossier __app__** <br>
-.venv/Scripts/activate (rentrer dans le venv) <br>
-flask --app flaskr:create_app run (lance flask en précisant le package et la fonction **create_app**) <br>
-Ouvrir le navigateur à l'adresse 127.0.0.1:5000, le projet devrait apparaitre <br>
+##  Pour lancer l'application
 
+###  Prérequis
+- Python 3.9+ installé  
+- pip (normalement installé avec Python)
+- FastAPI et Uvicorn installés
 
-### Sur Linux : 
-Cloner ce repo <br>
-Se placer **dans le dossier __app__** <br>
-source .venv/bin/activate (rentrer dans le venv) <br>
-export FLASK_APP=flaskr:create_app ("build" l'application, ne faire cette commande que la première fois) <br>
-flask run (lance l'application) <br>
-Ouvrir le navigateur à l'adresse 127.0.0.1:5000, le projet devrait apparaitre <br>
+---
+
+###  Installation
+```bash
+git clone https://github.com/mon-compte/mon-projet.git
+cd mon-projet
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+---
+
+### Lancement 
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+L'application sera accessible à l'adresse : 
+http://<adresse_du_serveur>:8000
