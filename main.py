@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 import os
 import subprocess
 
-app = FastAPI(title="Hello World App")
+app = FastAPI(title="app")
 
 def build_astro():
     """Build Astro à chaque lancement"""
@@ -43,21 +43,6 @@ async def read_index():
         return FileResponse("astro-frontend/dist/index.html")
     else:
         return {"error": "Astro build not found."}
-
-# Route pour les autres pages Astro
-@app.get("/{path_name:path}")
-async def read_astro_pages(path_name: str):
-    file_path = f"astro-frontend/dist/{path_name}"
-    
-    # Si c'est un fichier qui existe, le servir
-    if os.path.isfile(file_path):
-        return FileResponse(file_path)
-    
-    # Pour le routing côté client, servir index.html
-    if os.path.exists("astro-frontend/dist/index.html"):
-        return FileResponse("astro-frontend/dist/index.html")
-    else:
-        return {"error": "Astro build not found"}
 
 if __name__ == "__main__":
     import uvicorn
