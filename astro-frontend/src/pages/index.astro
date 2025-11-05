@@ -1,6 +1,7 @@
 ---
 // src/pages/index.astro
 import "../styles/global.css";
+import "../styles/style.css";
 ---
 
 <!doctype html>
@@ -9,39 +10,6 @@ import "../styles/global.css";
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>GlossAI - Glossaire</title>
-        <style>
-            @keyframes slideIn {
-                from {
-                    transform: translateY(-100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-
-            .modal-overlay {
-                animation: fadeIn 0.2s ease-out;
-            }
-
-            .modal-content {
-                animation: slideIn 0.3s ease-out;
-            }
-
-            .toast {
-                animation: slideIn 0.3s ease-out;
-            }
-        </style>
     </head>
     <body class="bg-gray-50">
         <!-- Header -->
@@ -115,7 +83,7 @@ import "../styles/global.css";
         <!-- Modal -->
         <div id="modal" class="hidden fixed inset-0 z-50">
             <div
-                class="modal-overlay absolute inset-0 bg-gray-900 bg-opacity-30 backdrop-blur-sm"
+                class="modal-overlay absolute inset-0 bg-opacity-30 backdrop-blur-sm"
                 id="modalOverlay"
             >
             </div>
@@ -244,35 +212,9 @@ import "../styles/global.css";
         </div>
 
         <script>
-            // Initialize with default terms if localStorage is empty
-            const defaultTerms = [
-                {
-                    id: 1,
-                    term: "Plateau",
-                    definition:
-                        "Grille composée de cases permettant de placer des jetons lettres",
-                    synonyms: ["trame", "plat"],
-                },
-                {
-                    id: 2,
-                    term: "Jetons",
-                    definition:
-                        "Entités stockant une lettre, pouvant être placés sur une case",
-                    synonyms: ["aperie", "plat"],
-                },
-                {
-                    id: 3,
-                    term: "Règles",
-                    definition:
-                        "Fiche comportant les différentes règles du jeu",
-                    synonyms: ["Limites", "interdictions"],
-                },
-            ];
-
             // Load terms from localStorage or use defaults
             let terms =
-                JSON.parse(localStorage.getItem("glossaryTerms")) ||
-                defaultTerms;
+                JSON.parse(localStorage.getItem("glossaryTerms")) || [];
             let nextId = Math.max(...terms.map((t) => t.id), 0) + 1;
             let currentSynonyms = [];
 
