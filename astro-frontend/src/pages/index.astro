@@ -1,62 +1,428 @@
-<!DOCTYPE html>
+---
+// src/pages/index.astro
+import "../styles/global.css";
+---
+
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlossAI</title>
-</head>
-<body>
-    <div>
-        <header>
-            <h1>GlossAI</h1>
-            <div>
-                <div>
-                    <input type="text" placeholder="Rechercher terme du glossaire">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GlossAI - Glossaire</title>
+        <style>
+            @keyframes slideIn {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .modal-overlay {
+                animation: fadeIn 0.2s ease-out;
+            }
+
+            .modal-content {
+                animation: slideIn 0.3s ease-out;
+            }
+
+            .toast {
+                animation: slideIn 0.3s ease-out;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-50">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-8 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-red-600 rounded flex items-center justify-center"
+                    >
+                        <span class="text-white font-bold text-sm">GAI</span>
+                    </div>
+                    <h1 class="text-2xl font-semibold text-gray-900">
+                        GlossAI
+                    </h1>
                 </div>
-                <button>Nouveau terme</button>
+                <button
+                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                >
+                    Exporter
+                </button>
             </div>
         </header>
-        
-        <hr>
-        
-        <div>
-            <span>3 Termes</span>
-        </div>
-        
-        <div>
-            <div>Glossaire</div>
-            <div>
-                <button>Trier</button>
-                <button>Filtrer</button>
+
+        <!-- Main Content -->
+        <main class="px-8 py-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-semibold text-gray-900">
+                        Glossaire
+                    </h2>
+                    <button
+                        id="addTermBtn"
+                        class="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
+                    >
+                        + Nouveau terme
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div
+                    class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+                >
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th
+                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-900"
+                                    >Terme</th
+                                >
+                                <th
+                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-900"
+                                    >Définition</th
+                                >
+                                <th
+                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-900"
+                                    >Synonymes</th
+                                >
+                            </tr>
+                        </thead>
+                        <tbody
+                            id="glossaryTable"
+                            class="divide-y divide-gray-200"
+                        >
+                            <!-- Terms will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal -->
+        <div id="modal" class="hidden fixed inset-0 z-50">
+            <div
+                class="modal-overlay absolute inset-0 bg-gray-900 bg-opacity-30 backdrop-blur-sm"
+                id="modalOverlay"
+            >
+            </div>
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div
+                    class="modal-content bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-10 relative"
+                >
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-8">
+                        Ajout d'un nouveau terme métier
+                    </h3>
+
+                    <div
+                        class="bg-gray-50 rounded-2xl p-8 space-y-6 border border-gray-100"
+                    >
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                            Détails du terme métier
+                        </h4>
+
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-900 mb-2"
+                            >
+                                Mot <span class="text-red-600">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="termInput"
+                                placeholder="Entrez le nom du terme métier"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-900 mb-2"
+                            >
+                                Définition <span class="text-red-600">*</span>
+                            </label>
+                            <textarea
+                                id="definitionInput"
+                                placeholder="Entrez la définition du terme métier"
+                                rows="4"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all resize-none bg-white"
+                            ></textarea>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-900 mb-2"
+                            >
+                                Synonyme
+                            </label>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <input
+                                    type="text"
+                                    id="synonymInput"
+                                    placeholder="Entrez le synonymes du terme métier"
+                                    class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-sm"
+                                />
+                                <!-- Tags container inline -->
+                                <div
+                                    id="synonymTags"
+                                    class="flex flex-wrap gap-2"
+                                >
+                                    <!-- Tags will be inserted here -->
+                                </div>
+                            </div>
+
+                            <button
+                                id="suggestBtn"
+                                class="mt-3 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white"
+                            >
+                                Suggestions IA
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 mt-8">
+                        <button
+                            id="cancelBtn"
+                            class="px-8 py-3 border border-gray-300 rounded-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            id="submitBtn"
+                            class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                        >
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Terme</th>
-                    <th>Définition</th>
-                    <th>Synonymes</th>
+
+        <!-- Toast Notification -->
+        <div
+            id="toast"
+            class="hidden fixed top-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 toast"
+        >
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
+                >
+                    <svg
+                        class="w-6 h-6 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-medium text-gray-900">Suggestions IA</p>
+                    <p class="text-sm text-gray-600">
+                        Fonctionnalité en cours de développement
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Initialize with default terms if localStorage is empty
+            const defaultTerms = [
+                {
+                    id: 1,
+                    term: "Plateau",
+                    definition:
+                        "Grille composée de cases permettant de placer des jetons lettres",
+                    synonyms: ["trame", "plat"],
+                },
+                {
+                    id: 2,
+                    term: "Jetons",
+                    definition:
+                        "Entités stockant une lettre, pouvant être placés sur une case",
+                    synonyms: ["aperie", "plat"],
+                },
+                {
+                    id: 3,
+                    term: "Règles",
+                    definition:
+                        "Fiche comportant les différentes règles du jeu",
+                    synonyms: ["Limites", "interdictions"],
+                },
+            ];
+
+            // Load terms from localStorage or use defaults
+            let terms =
+                JSON.parse(localStorage.getItem("glossaryTerms")) ||
+                defaultTerms;
+            let nextId = Math.max(...terms.map((t) => t.id), 0) + 1;
+            let currentSynonyms = [];
+
+            // Save terms to localStorage
+            function saveTerms() {
+                localStorage.setItem("glossaryTerms", JSON.stringify(terms));
+            }
+
+            // Render table
+            function renderTable() {
+                const tbody = document.getElementById("glossaryTable");
+                tbody.innerHTML = terms
+                    .map(
+                        (term) => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 font-medium text-gray-900">${term.term}</td>
+                    <td class="px-6 py-4 text-gray-700">${term.definition}</td>
+                    <td class="px-6 py-4 text-gray-700">${Array.isArray(term.synonyms) ? term.synonyms.join(", ") : term.synonyms}</td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Plateau</td>
-                    <td>Grille composée de cases permettant de placer des jetons lettres</td>
-                    <td>scène, plat</td>
-                </tr>
-                <tr>
-                    <td>Jetons</td>
-                    <td>Entrés stockant une lettre, pouvant être placés sur une case</td>
-                    <td>scène, plat</td>
-                </tr>
-                <tr>
-                    <td>Règles</td>
-                    <td>Fiche comportant les différentes règles du jeu</td>
-                    <td>Limites, interdictions</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</body>
+            `,
+                    )
+                    .join("");
+            }
+
+            // Render synonym tags
+            function renderSynonymTags() {
+                const tagsContainer = document.getElementById("synonymTags");
+                tagsContainer.innerHTML = currentSynonyms
+                    .map(
+                        (syn, index) => `
+                <span class="inline-flex items-center gap-2 px-3 py-1 bg-gray-200 text-gray-800 rounded-md text-sm">
+                    ${syn}
+                    <button onclick="removeSynonym(${index})" class="text-gray-600 hover:text-gray-900 font-bold">×</button>
+                </span>
+            `,
+                    )
+                    .join("");
+            }
+
+            // Remove synonym
+            window.removeSynonym = function (index) {
+                currentSynonyms.splice(index, 1);
+                renderSynonymTags();
+            };
+
+            // Add synonym from input
+            function addSynonymFromInput() {
+                const synonymInput = document.getElementById("synonymInput");
+                const synonym = synonymInput.value.trim();
+
+                if (synonym && !currentSynonyms.includes(synonym)) {
+                    currentSynonyms.push(synonym);
+                    renderSynonymTags();
+                    synonymInput.value = "";
+                }
+            }
+
+            // Modal functions
+            const modal = document.getElementById("modal");
+            const addTermBtn = document.getElementById("addTermBtn");
+            const cancelBtn = document.getElementById("cancelBtn");
+            const submitBtn = document.getElementById("submitBtn");
+            const modalOverlay = document.getElementById("modalOverlay");
+            const suggestBtn = document.getElementById("suggestBtn");
+            const toast = document.getElementById("toast");
+            const synonymInput = document.getElementById("synonymInput");
+
+            function openModal() {
+                modal.classList.remove("hidden");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeModal() {
+                modal.classList.add("hidden");
+                document.body.style.overflow = "auto";
+                // Clear inputs and tags
+                document.getElementById("termInput").value = "";
+                document.getElementById("definitionInput").value = "";
+                document.getElementById("synonymInput").value = "";
+                currentSynonyms = [];
+                renderSynonymTags();
+            }
+
+            function showToast() {
+                toast.classList.remove("hidden");
+                setTimeout(() => {
+                    toast.classList.add("hidden");
+                }, 3000);
+            }
+
+            // Event listeners
+            addTermBtn.addEventListener("click", openModal);
+            cancelBtn.addEventListener("click", closeModal);
+            modalOverlay.addEventListener("click", closeModal);
+            suggestBtn.addEventListener("click", showToast);
+
+            // Add synonym on Enter key
+            synonymInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSynonymFromInput();
+                }
+            });
+
+            submitBtn.addEventListener("click", () => {
+                const term = document.getElementById("termInput").value.trim();
+                const definition = document
+                    .getElementById("definitionInput")
+                    .value.trim();
+
+                // Add any pending synonym from input
+                const pendingSynonym = document
+                    .getElementById("synonymInput")
+                    .value.trim();
+                if (
+                    pendingSynonym &&
+                    !currentSynonyms.includes(pendingSynonym)
+                ) {
+                    currentSynonyms.push(pendingSynonym);
+                }
+
+                if (term && definition) {
+                    terms.push({
+                        id: nextId++,
+                        term,
+                        definition,
+                        synonyms:
+                            currentSynonyms.length > 0
+                                ? [...currentSynonyms]
+                                : [],
+                    });
+                    saveTerms();
+                    renderTable();
+                    closeModal();
+                } else {
+                    alert(
+                        "Veuillez remplir les champs obligatoires (Mot et Définition)",
+                    );
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                    closeModal();
+                }
+            });
+
+            // Initial render
+            renderTable();
+        </script>
+    </body>
 </html>
