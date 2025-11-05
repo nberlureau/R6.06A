@@ -16,17 +16,16 @@ import "../styles/style.css";
         <header class="bg-white border-b border-gray-200 px-8 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <div
-                        class="w-8 h-8 bg-red-600 rounded flex items-center justify-center"
-                    >
-                        <span class="text-white font-bold text-sm">GAI</span>
-                    </div>
-                    <h1 class="text-2xl font-semibold text-gray-900">
-                        GlossAI
-                    </h1>
+                    <img
+                        src="static/logo.png"
+                        alt="GlossAI Logo"
+                        width="200px"
+                    />
+                    <h1 class="text-2xl font-semibold text-gray-900"></h1>
                 </div>
                 <button
-                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                    id="exportBtn"
+                    class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors"
                 >
                     Exporter
                 </button>
@@ -42,7 +41,7 @@ import "../styles/style.css";
                     </h2>
                     <button
                         id="addTermBtn"
-                        class="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
+                        class="bg-primary hover-bg-primary text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
                     >
                         + Nouveau terme
                     </button>
@@ -187,7 +186,7 @@ import "../styles/style.css";
                         </button>
                         <button
                             id="submitBtn"
-                            class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                            class="px-8 py-3 bg-primary hover-bg-primary text-white rounded-lg font-medium transition-colors"
                         >
                             Ajouter
                         </button>
@@ -458,6 +457,29 @@ import "../styles/style.css";
                     closeModal();
                 }
             });
+
+            document
+                .getElementById("exportBtn")
+                .addEventListener("click", async function () {
+                    try {
+                        // Import dynamique côté client
+                        const { generateMarkdown } = await import(
+                            "../lib/export_documents.js"
+                        );
+
+                        // Transformer les termes en format compatible
+                        const exportData = terms.map((term) => [
+                            term.term,
+                            term.definition,
+                            Array.isArray(term.synonyms) ? term.synonyms : [],
+                        ]);
+
+                        generateMarkdown(exportData);
+                    } catch (error) {
+                        console.error("Erreur lors de l'export :", error);
+                        alert("Erreur lors de l'export du glossaire");
+                    }
+                });
 
             // Initial render
             renderTable();

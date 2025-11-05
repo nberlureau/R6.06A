@@ -1,1 +1,35 @@
 @import "tailwindcss";
+
+:root {
+    --color-primary: #ad161d;
+    --color-primary-hover: #c41a22;
+    --color-secondary: #f3f4f6;
+    /* bg-gray-50 */
+    --color-white: #ffffff;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-900: #111827;
+    --color-blue-100: #dbeafe;
+    --color-blue-600: #2563eb;
+}
+
+/* Classes utilitaires avec les variables */
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+.hover-bg-primary:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.border-primary {
+    border-color: var(--color-primary);
+}
+
+.ring-primary:focus {
+    --tw-ring-color: var(--color-primary);
+}
