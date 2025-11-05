@@ -23,6 +23,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 cd astro-frontend
 npm install
+cd ..
 ```
 #### Windows
 ```bash
@@ -33,6 +34,7 @@ python3 -m venv .venv
 pip install -r requirements.txt
 cd astro-frontend
 npm install
+cd ..
 ```
 ---
 
