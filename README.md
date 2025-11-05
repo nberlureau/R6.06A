@@ -21,9 +21,8 @@ cd mon-projet
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-npm install astro
-npx astro add tailwind
-npx astro add solid
+cd astro-frontend
+npm install
 ```
 #### Windows
 ```bash
@@ -32,9 +31,8 @@ cd mon-projet
 python3 -m venv .venv
 .venv/Scripts/Activate.ps1
 pip install -r requirements.txt
-npm install astro
-npx astro add tailwind
-npx astro add solid
+cd astro-frontend
+npm install
 ```
 ---
 
