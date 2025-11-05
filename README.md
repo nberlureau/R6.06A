@@ -10,6 +10,7 @@ Une application en Python **FastAPI** permettant d'implémenter les fonctionnali
 - pip installé
 - venv installé
 - Node.js 18.17.1+ installé
+- Avoir ses polices d'execution qui autorisent l'execution des scripts
 ---
 
 ### Installation
