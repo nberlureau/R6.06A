@@ -357,18 +357,75 @@ import "../styles/style.css";
                 clearErrors();
             }
 
-            function showToast() {
-                toast.classList.remove("hidden");
-                setTimeout(() => {
-                    toast.classList.add("hidden");
-                }, 3000);
+            async function fetchAISuggestions() {
+                const termInput = document.getElementById("termInput");
+                const definitionInput = document.getElementById("definitionInput");
+                const suggestBtn = document.getElementById("suggestBtn");
+                
+                const term = termInput.value.trim();
+                const definition = definitionInput.value.trim();
+
+                if (!term) {
+                    alert("Veuillez d'abord saisir un terme métier");
+                    termInput.focus();
+                    return;
+                }
+
+                // Afficher un indicateur de chargement
+                const originalText = suggestBtn.textContent;
+                suggestBtn.textContent = "Chargement...";
+                suggestBtn.disabled = true;
+
+                try {
+                    const response = await fetch("/api/suggest", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            term: term,
+                            context: definition ? [definition] : []
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || "Erreur lors de la requête");
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.synonyms && data.synonyms.length > 0) {
+                        // Ajouter les nouveaux synonymes (éviter les doublons)
+                        data.synonyms.forEach(synonym => {
+                            if (!currentSynonyms.includes(synonym) && synonym.toLowerCase() !== term.toLowerCase()) {
+                                currentSynonyms.push(synonym);
+                            }
+                        });
+                        
+                        renderSynonymTags();
+                        
+                        // Afficher un message de succès
+                        showSuccessMessage(`${data.synonyms.length} suggestions trouvées`);
+                    } else {
+                        showInfoMessage("Aucun synonyme trouvé pour ce terme");
+                    }
+
+                } catch (error) {
+                    console.error("Erreur:", error);
+                    showErrorMessage("Erreur: " + error.message);
+                } finally {
+                    // Restaurer le bouton
+                    suggestBtn.textContent = originalText;
+                    suggestBtn.disabled = false;
+                }
             }
 
             // Event listeners
             addTermBtn.addEventListener("click", openModal);
             cancelBtn.addEventListener("click", closeModal);
             modalOverlay.addEventListener("click", closeModal);
-            suggestBtn.addEventListener("click", showToast);
+            suggestBtn.addEventListener("click", fetchAISuggestions);
 
             // Add synonym on Enter key
             synonymInput.addEventListener("keypress", (e) => {
@@ -480,6 +537,56 @@ import "../styles/style.css";
                         alert("Erreur lors de l'export du glossaire");
                     }
                 });
+
+            // Fonctions pour afficher différents types de messages
+            function showSuccessMessage(message) {
+                showMessage(message, "bg-green-100 border-green-400 text-green-700");
+            }
+
+            function showErrorMessage(message) {
+                showMessage(message, "bg-red-100 border-red-400 text-red-700");
+            }
+
+            function showInfoMessage(message) {
+                showMessage(message, "bg-blue-100 border-blue-400 text-blue-700");
+            }
+
+            function showMessage(message, styles) {
+                // Créer ou réutiliser la toast
+                let toast = document.getElementById("aiToast");
+                if (!toast) {
+                    toast = document.createElement("div");
+                    toast.id = "aiToast";
+                    toast.className = `fixed top-4 right-4 border rounded-lg shadow-lg p-4 z-50 transition-opacity duration-300 ${styles}`;
+                    document.body.appendChild(toast);
+                }
+                
+                toast.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1">
+                            <p class="font-medium">${message}</p>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+                `;
+                
+                // Auto-suppression après 5 secondes
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 5000);
+            }
+
+            // Permettre d'appuyer sur Entrée dans le champ synonyme pour ajouter
+            synonymInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSynonymFromInput();
+                }
+            });
 
             // Initial render
             renderTable();
