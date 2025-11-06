@@ -142,30 +142,22 @@ import "../styles/style.css";
                         </div>
 
                         <div>
-                            <label
-                                class="block text-sm font-medium text-gray-900 mb-2"
-                            >
+                            <label class="block text-sm font-medium text-gray-900 mb-2">
                                 Synonyme
                             </label>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <input
-                                    type="text"
-                                    id="synonymInput"
-                                    placeholder="Entrez le synonymes du terme métier"
-                                    class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-sm"
+                                type="text"
+                                id="synonymInput"
+                                placeholder="Entrez le synonymes du terme métier"
+                                class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-sm"
                                 />
                                 <!-- Tags container inline -->
-                                <div
-                                    id="synonymTags"
-                                    class="flex flex-wrap gap-2"
-                                >
-                                    <!-- Tags will be inserted here -->
+                                <div id="synonymTags" class="flex flex-wrap gap-2">
+                                <!-- Tags will be inserted here -->
                                 </div>
                             </div>
-                            <p
-                                id="synonymError"
-                                class="text-red-600 text-sm mt-1 hidden"
-                            >
+                            <p id="synonymError" class="text-red-600 text-sm mt-1 hidden">
                             </p>
 
                             <button
@@ -174,6 +166,11 @@ import "../styles/style.css";
                             >
                                 Suggestions IA
                             </button>
+
+                            <!-- Conteneur pour les suggestions IA -->
+                            <div id="aiSuggestionsContainer" class="mt-2 flex flex-wrap gap-2 hidden">
+                                <!-- Les suggestions IA seront insérées ici -->
+                            </div>
                         </div>
                     </div>
 
@@ -353,28 +350,105 @@ import "../styles/style.css";
                 document.getElementById("definitionInput").value = "";
                 document.getElementById("synonymInput").value = "";
                 currentSynonyms = [];
+                aiSuggestions = []; // Vider les suggestions IA
                 renderSynonymTags();
+                // Cacher le conteneur de suggestions IA
+                document.getElementById("aiSuggestionsContainer").classList.add("hidden");
                 clearErrors();
             }
 
+            let aiSuggestions = [];
+
+            // Fonction pour afficher les suggestions IA cliquables
+            function renderAISuggestions() {
+                const container = document.getElementById("aiSuggestionsContainer");
+                
+                if (aiSuggestions.length === 0) {
+                    container.classList.add("hidden");
+                    return;
+                }
+
+                // Filtrer les suggestions qui ne sont pas déjà dans les tags
+                const availableSuggestions = aiSuggestions.filter(
+                    synonym => !currentSynonyms.includes(synonym)
+                );
+
+                // Prendre 5 suggestions aléatoires maximum
+                const randomSuggestions = availableSuggestions
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 5);
+
+                if (randomSuggestions.length === 0) {
+                    container.classList.add("hidden");
+                    return;
+                }
+
+                container.innerHTML = randomSuggestions
+                    .map(synonym => `
+                        <button 
+                            type="button" 
+                            class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm hover:bg-blue-200 transition-colors ai-suggestion-btn"
+                            data-synonym="${synonym.replace(/"/g, '&quot;')}"
+                        >
+                            ${synonym}
+                            <span class="text-blue-600 text-xs">+</span>
+                        </button>
+                    `)
+                    .join('');
+
+                container.classList.remove("hidden");
+
+                // Ajouter les événements click aux boutons de suggestion
+                document.querySelectorAll('.ai-suggestion-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const synonym = this.getAttribute('data-synonym');
+                        addAISuggestion(synonym);
+                    });
+                });
+            }
+
+            // Fonction pour ajouter une suggestion IA aux tags
+            function addAISuggestion(synonym) {
+                const termInput = document.getElementById("termInput");
+                const term = termInput.value.trim();
+                
+                // Vérifier que le synonyme n'est pas identique au terme
+                if (synonym.toLowerCase() === term.toLowerCase()) {
+                    return;
+                }
+                
+                // Vérifier que le synonyme n'est pas déjà présent
+                if (!currentSynonyms.includes(synonym)) {
+                    currentSynonyms.push(synonym);
+                    renderSynonymTags();
+                    // Re-rendre les suggestions pour enlever celle qui a été ajoutée
+                    renderAISuggestions();
+                }
+            }
+
+            // Fonction pour récupérer les suggestions IA
             async function fetchAISuggestions() {
                 const termInput = document.getElementById("termInput");
                 const definitionInput = document.getElementById("definitionInput");
                 const suggestBtn = document.getElementById("suggestBtn");
+                const aiSuggestionsContainer = document.getElementById("aiSuggestionsContainer");
                 
                 const term = termInput.value.trim();
                 const definition = definitionInput.value.trim();
 
                 if (!term) {
-                    alert("Veuillez d'abord saisir un terme métier");
+                    showErrorMessage("Veuillez d'abord saisir un terme métier");
                     termInput.focus();
                     return;
                 }
 
                 // Afficher un indicateur de chargement
                 const originalText = suggestBtn.textContent;
-                suggestBtn.textContent = "Chargement...";
+                suggestBtn.textContent = "Recherche...";
                 suggestBtn.disabled = true;
+
+                // Masquer les anciennes suggestions pendant le chargement
+                aiSuggestionsContainer.classList.add("hidden");
 
                 try {
                     const response = await fetch("/api/suggest", {
@@ -396,24 +470,20 @@ import "../styles/style.css";
                     const data = await response.json();
                     
                     if (data.synonyms && data.synonyms.length > 0) {
-                        // Ajouter les nouveaux synonymes (éviter les doublons)
-                        data.synonyms.forEach(synonym => {
-                            if (!currentSynonyms.includes(synonym) && synonym.toLowerCase() !== term.toLowerCase()) {
-                                currentSynonyms.push(synonym);
-                            }
-                        });
-                        
-                        renderSynonymTags();
-                        
-                        // Afficher un message de succès
+                        // Stocker toutes les suggestions
+                        aiSuggestions = data.synonyms;
+                        // Afficher les suggestions cliquables
+                        renderAISuggestions();
                         showSuccessMessage(`${data.synonyms.length} suggestions trouvées`);
                     } else {
+                        aiSuggestions = [];
                         showInfoMessage("Aucun synonyme trouvé pour ce terme");
                     }
 
                 } catch (error) {
                     console.error("Erreur:", error);
                     showErrorMessage("Erreur: " + error.message);
+                    aiSuggestions = [];
                 } finally {
                     // Restaurer le bouton
                     suggestBtn.textContent = originalText;

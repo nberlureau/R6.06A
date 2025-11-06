@@ -116,13 +116,13 @@ async def suggest_synonyms(request: SynonymRequest):
         synonyms_with_scores = await get_synonyms(
             words=[request.term],
             context=request.context,
-            threshold=0.3  # Seuil de similarité (ajustable)
+            threshold=0.3  # Seuil de similarité
         )
         
         # Extraire seulement les mots des synonymes (sans les scores)
         synonyms = [synonym for synonym, score in synonyms_with_scores]
         
-        return SynonymResponse(synonyms=synonyms[:10])
+        return SynonymResponse(synonyms=synonyms)
         
     except Exception as e:
         raise HTTPException(
