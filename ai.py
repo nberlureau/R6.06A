@@ -8,6 +8,7 @@ async def get_synonyms(
     definition: str,
     synonyms: list[str],
 ) -> list[str]:
+    word = word.strip().lower()
     synonyms = [synonym.strip().lower() for synonym in synonyms if synonym.strip()]
     prompt = f"""
 Find synonyms of the word "{word}" defined by:
@@ -26,11 +27,13 @@ Your response MUST only include the synonyms separated by commas.
     ).response
     response = response.replace('"', "").replace("'", "")
 
-    return [
-        term.strip().lower()
-        for term in response.split(",")
-        if term.strip().lower() not in [word, *synonyms]
-    ]
+    return list(
+        {
+            term.strip().lower()
+            for term in response.split(",")
+            if term.strip().lower() not in [word, *synonyms]
+        },
+    )
 
 
 async def main() -> None:
