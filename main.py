@@ -5,10 +5,9 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 from ai import get_synonyms
-from pydantic import BaseModel
-from typing import List, Optional
 
 app = FastAPI(title="GlossAI")
 
@@ -63,13 +62,16 @@ def build_astro() -> None:
 # Build automatique au démarrage
 build_astro()
 
+
 # Modèles Pydantic pour la validation des données
 class SynonymRequest(BaseModel):
     term: str
-    context: Optional[List[str]] = []
+    context: list[str] | None = []
+
 
 class SynonymResponse(BaseModel):
-    synonyms: List[str]
+    synonyms: list[str]
+
 
 # Monter les dossiers statiques seulement si le build a réussi
 astro_frontend_path = Path("astro-frontend")
@@ -108,6 +110,7 @@ async def read_index():
         detail="Frontend non disponible. Le build Astro a probablement échoué.",
     )
 
+
 # Route pour les suggestions IA
 @app.post("/api/suggest", response_model=SynonymResponse)
 async def suggest_synonyms(request: SynonymRequest):
@@ -116,19 +119,20 @@ async def suggest_synonyms(request: SynonymRequest):
         synonyms_with_scores = await get_synonyms(
             words=[request.term],
             context=request.context,
-            threshold=0.3  # Seuil de similarité
+            threshold=0.3,  # Seuil de similarité
         )
-        
+
         # Extraire seulement les mots des synonymes (sans les scores)
         synonyms = [synonym for synonym, score in synonyms_with_scores]
-        
+
         return SynonymResponse(synonyms=synonyms)
-        
+
     except Exception as e:
         raise HTTPException(
-            status_code=500, 
-            detail=f"Erreur lors de la génération des suggestions: {str(e)}"
+            status_code=500,
+            detail=f"Erreur lors de la génération des suggestions: {e!s}",
         )
+
 
 if __name__ == "__main__":
     import uvicorn

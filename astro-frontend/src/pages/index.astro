@@ -6,385 +6,359 @@ import "../styles/style.css";
 
 <!doctype html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>GlossAI - Glossaire</title>
-    </head>
-    <body class="bg-gray-50">
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-200 px-8 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <img
-                        src="static/logo.png"
-                        alt="GlossAI Logo"
-                        width="200px"
-                    />
-                    <h1 class="text-2xl font-semibold text-gray-900"></h1>
-                </div>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GlossAI - Glossaire</title>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-8 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <img
+                    src="static/logo.png"
+                    alt="GlossAI Logo"
+                    width="200px" />
+                <h1 class="text-2xl font-semibold text-gray-900"></h1>
+            </div>
+            <button
+                id="exportBtn"
+                class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                Exporter
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-8 py-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-semibold text-gray-900">
+                    Glossaire
+                </h2>
                 <button
-                    id="exportBtn"
-                    class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                >
-                    Exporter
+                    id="addTermBtn"
+                    class="bg-primary hover-bg-primary text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+                    + Nouveau terme
                 </button>
             </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="px-8 py-8">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-semibold text-gray-900">
-                        Glossaire
-                    </h2>
-                    <button
-                        id="addTermBtn"
-                        class="bg-primary hover-bg-primary text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
-                    >
-                        + Nouveau terme
-                    </button>
-                </div>
-
-                <!-- Table -->
-                <div
-                    class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
-                >
-                    <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th
-                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-900"
-                                    >Terme</th
-                                >
-                                <th
-                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-900"
-                                    >Définition</th
-                                >
-                                <th
-                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-900"
-                                    >Synonymes</th
-                                >
-                            </tr>
-                        </thead>
-                        <tbody
-                            id="glossaryTable"
-                            class="divide-y divide-gray-200"
-                        >
-                            <!-- Terms will be inserted here by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-
-        <!-- Modal -->
-        <div id="modal" class="hidden fixed inset-0 z-50">
+            <!-- Table -->
             <div
-                class="modal-overlay absolute inset-0 bg-opacity-30 backdrop-blur-sm"
-                id="modalOverlay"
-            >
+                class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th
+                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Terme</th>
+                            <th
+                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Définition</th>
+                            <th
+                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Synonymes</th>
+                        </tr>
+                    </thead>
+                    <tbody
+                        id="glossaryTable"
+                        class="divide-y divide-gray-200">
+                        <!-- Terms will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
             </div>
-            <div class="flex items-center justify-center min-h-screen p-4">
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-50">
+        <div
+            class="modal-overlay absolute inset-0 bg-opacity-30 backdrop-blur-sm"
+            id="modalOverlay">
+        </div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div
+                class="modal-content bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-10 relative">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-8">
+                    Ajout d'un nouveau terme métier
+                </h3>
+
                 <div
-                    class="modal-content bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-10 relative"
-                >
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-8">
-                        Ajout d'un nouveau terme métier
-                    </h3>
+                    class="bg-gray-50 rounded-2xl p-8 space-y-6 border border-gray-100">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                        Détails du terme métier
+                    </h4>
 
-                    <div
-                        class="bg-gray-50 rounded-2xl p-8 space-y-6 border border-gray-100"
-                    >
-                        <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                            Détails du terme métier
-                        </h4>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-900 mb-2">
+                            Mot <span class="text-red-600">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="termInput"
+                            placeholder="Entrez le nom du terme métier"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white" />
+                        <p
+                            id="termError"
+                            class="text-red-600 text-sm mt-1 hidden">
+                            Le champ est obligatoire !
+                        </p>
+                    </div>
 
-                        <div>
-                            <label
-                                class="block text-sm font-medium text-gray-900 mb-2"
-                            >
-                                Mot <span class="text-red-600">*</span>
-                            </label>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-900 mb-2">
+                            Définition <span class="text-red-600">*</span>
+                        </label>
+                        <textarea
+                            id="definitionInput"
+                            placeholder="Entrez la définition du terme métier"
+                            rows="4"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all resize-none bg-white"></textarea>
+                        <p
+                            id="definitionError"
+                            class="text-red-600 text-sm mt-1 hidden">
+                            Le champ est obligatoire !
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">
+                            Synonyme
+                        </label>
+                        <div class="flex items-center gap-2 flex-wrap">
                             <input
-                                type="text"
-                                id="termInput"
-                                placeholder="Entrez le nom du terme métier"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white"
-                            />
-                            <p
-                                id="termError"
-                                class="text-red-600 text-sm mt-1 hidden"
-                            >
-                                Le champ est obligatoire !
-                            </p>
-                        </div>
-
-                        <div>
-                            <label
-                                class="block text-sm font-medium text-gray-900 mb-2"
-                            >
-                                Définition <span class="text-red-600">*</span>
-                            </label>
-                            <textarea
-                                id="definitionInput"
-                                placeholder="Entrez la définition du terme métier"
-                                rows="4"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all resize-none bg-white"
-                            ></textarea>
-                            <p
-                                id="definitionError"
-                                class="text-red-600 text-sm mt-1 hidden"
-                            >
-                                Le champ est obligatoire !
-                            </p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">
-                                Synonyme
-                            </label>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <input
                                 type="text"
                                 id="synonymInput"
                                 placeholder="Entrez le synonymes du terme métier"
-                                class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-sm"
-                                />
-                                <!-- Tags container inline -->
-                                <div id="synonymTags" class="flex flex-wrap gap-2">
+                                class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-sm" />
+                            <!-- Tags container inline -->
+                            <div id="synonymTags" class="flex flex-wrap gap-2">
                                 <!-- Tags will be inserted here -->
-                                </div>
-                            </div>
-                            <p id="synonymError" class="text-red-600 text-sm mt-1 hidden">
-                            </p>
-
-                            <button
-                                id="suggestBtn"
-                                class="mt-3 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white"
-                            >
-                                Suggestions IA
-                            </button>
-
-                            <!-- Conteneur pour les suggestions IA -->
-                            <div id="aiSuggestionsContainer" class="mt-2 flex flex-wrap gap-2 hidden">
-                                <!-- Les suggestions IA seront insérées ici -->
                             </div>
                         </div>
-                    </div>
+                        <p id="synonymError" class="text-red-600 text-sm mt-1 hidden">
+                        </p>
 
-                    <div class="flex justify-end gap-3 mt-8">
                         <button
-                            id="cancelBtn"
-                            class="px-8 py-3 border border-gray-300 rounded-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors"
-                        >
-                            Annuler
+                            id="suggestBtn"
+                            class="mt-3 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white">
+                            Suggestions IA
                         </button>
-                        <button
-                            id="submitBtn"
-                            class="px-8 py-3 bg-primary hover-bg-primary text-white rounded-lg font-medium transition-colors"
-                        >
-                            Ajouter
-                        </button>
+
+                        <!-- Conteneur pour les suggestions IA -->
+                        <div id="aiSuggestionsContainer" class="mt-2 flex flex-wrap gap-2 hidden">
+                            <!-- Les suggestions IA seront insérées ici -->
+                        </div>
                     </div>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-8">
+                    <button
+                        id="cancelBtn"
+                        class="px-8 py-3 border border-gray-300 rounded-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors">
+                        Annuler
+                    </button>
+                    <button
+                        id="submitBtn"
+                        class="px-8 py-3 bg-primary hover-bg-primary text-white rounded-lg font-medium transition-colors">
+                        Ajouter
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Toast Notification -->
-        <div
-            id="toast"
-            class="hidden fixed top-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 toast"
-        >
-            <div class="flex items-center gap-3">
-                <div
-                    class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
-                >
-                    <svg
-                        class="w-6 h-6 text-blue-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="font-medium text-gray-900">Suggestions IA</p>
-                    <p class="text-sm text-gray-600">
-                        Fonctionnalité en cours de développement
-                    </p>
-                </div>
+    <!-- Toast Notification -->
+    <div
+        id="toast"
+        class="hidden fixed top-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 toast">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <svg
+                    class="w-6 h-6 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">Suggestions IA</p>
+                <p class="text-sm text-gray-600">
+                    Fonctionnalité en cours de développement
+                </p>
             </div>
         </div>
+    </div>
 
-        <script>
-            // Load terms from localStorage or use defaults
-            let terms = JSON.parse(localStorage.getItem("glossaryTerms")) || [];
-            let nextId = Math.max(...terms.map((t) => t.id), 0) + 1;
-            let currentSynonyms = [];
+    <script>
+        // Load terms from localStorage or use defaults
+        let terms = JSON.parse(localStorage.getItem("glossaryTerms")) || [];
+        let nextId = Math.max(...terms.map((t) => t.id), 0) + 1;
+        let currentSynonyms = [];
 
-            // Save terms to localStorage
-            function saveTerms() {
-                localStorage.setItem("glossaryTerms", JSON.stringify(terms));
-            }
+        // Save terms to localStorage
+        function saveTerms() {
+            localStorage.setItem("glossaryTerms", JSON.stringify(terms));
+        }
 
-            // Render table
-            function renderTable() {
-                const tbody = document.getElementById("glossaryTable");
-                tbody.innerHTML = terms
-                    .map(
-                        (term) => `
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById("glossaryTable");
+            tbody.innerHTML = terms
+                .map(
+                    (term) => `
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4 font-medium text-gray-900">${term.term}</td>
                     <td class="px-6 py-4 text-gray-700">${term.definition}</td>
                     <td class="px-6 py-4 text-gray-700">${Array.isArray(term.synonyms) ? term.synonyms.join(", ") : term.synonyms}</td>
                 </tr>
             `,
-                    )
-                    .join("");
-            }
+                )
+                .join("");
+        }
 
-            // Render synonym tags
-            function renderSynonymTags() {
-                const tagsContainer = document.getElementById("synonymTags");
-                tagsContainer.innerHTML = currentSynonyms
-                    .map(
-                        (syn, index) => `
+        // Render synonym tags
+        function renderSynonymTags() {
+            const tagsContainer = document.getElementById("synonymTags");
+            tagsContainer.innerHTML = currentSynonyms
+                .map(
+                    (syn, index) => `
                 <span class="inline-flex items-center gap-2 px-3 py-1 bg-gray-200 text-gray-800 rounded-md text-sm">
                     ${syn}
                     <button onclick="removeSynonym(${index})" class="text-gray-600 hover:text-gray-900 font-bold">×</button>
                 </span>
             `,
-                    )
-                    .join("");
-            }
+                )
+                .join("");
+        }
 
-            // Remove synonym
-            window.removeSynonym = function (index) {
-                currentSynonyms.splice(index, 1);
-                renderSynonymTags();
-            };
+        // Remove synonym
+        window.removeSynonym = function(index) {
+            currentSynonyms.splice(index, 1);
+            renderSynonymTags();
+        };
 
-            // Add synonym from input
-            function addSynonymFromInput() {
-                const synonymInput = document.getElementById("synonymInput");
-                const termInput = document.getElementById("termInput");
-                const synonymError = document.getElementById("synonymError");
-                const synonym = synonymInput.value.trim();
-                const term = termInput.value.trim();
-
-                // Clear previous error
-                synonymError.classList.add("hidden");
-                synonymInput.classList.remove("border-red-500");
-
-                if (!synonym) return;
-
-                // Check if synonym equals the term
-                if (synonym.toLowerCase() === term.toLowerCase()) {
-                    synonymError.textContent =
-                        "Le synonyme ne peut pas être identique au terme !";
-                    synonymError.classList.remove("hidden");
-                    synonymInput.classList.add("border-red-500");
-                    return;
-                }
-
-                // Check if synonym already exists
-                if (currentSynonyms.includes(synonym)) {
-                    synonymError.textContent =
-                        "Ce synonyme a déjà été ajouté !";
-                    synonymError.classList.remove("hidden");
-                    synonymInput.classList.add("border-red-500");
-                    return;
-                }
-
-                currentSynonyms.push(synonym);
-                renderSynonymTags();
-                synonymInput.value = "";
-            }
-
-            // Clear all errors
-            function clearErrors() {
-                document.getElementById("termError").classList.add("hidden");
-                document
-                    .getElementById("definitionError")
-                    .classList.add("hidden");
-                document.getElementById("synonymError").classList.add("hidden");
-                document
-                    .getElementById("termInput")
-                    .classList.remove("border-red-500");
-                document
-                    .getElementById("definitionInput")
-                    .classList.remove("border-red-500");
-                document
-                    .getElementById("synonymInput")
-                    .classList.remove("border-red-500");
-            }
-
-            // Modal functions
-            const modal = document.getElementById("modal");
-            const addTermBtn = document.getElementById("addTermBtn");
-            const cancelBtn = document.getElementById("cancelBtn");
-            const submitBtn = document.getElementById("submitBtn");
-            const modalOverlay = document.getElementById("modalOverlay");
-            const suggestBtn = document.getElementById("suggestBtn");
-            const toast = document.getElementById("toast");
+        // Add synonym from input
+        function addSynonymFromInput() {
             const synonymInput = document.getElementById("synonymInput");
+            const termInput = document.getElementById("termInput");
+            const synonymError = document.getElementById("synonymError");
+            const synonym = synonymInput.value.trim();
+            const term = termInput.value.trim();
 
-            function openModal() {
-                modal.classList.remove("hidden");
-                document.body.style.overflow = "hidden";
+            // Clear previous error
+            synonymError.classList.add("hidden");
+            synonymInput.classList.remove("border-red-500");
+
+            if (!synonym) return;
+
+            // Check if synonym equals the term
+            if (synonym.toLowerCase() === term.toLowerCase()) {
+                synonymError.textContent =
+                    "Le synonyme ne peut pas être identique au terme !";
+                synonymError.classList.remove("hidden");
+                synonymInput.classList.add("border-red-500");
+                return;
             }
 
-            function closeModal() {
-                modal.classList.add("hidden");
-                document.body.style.overflow = "auto";
-                // Clear inputs and tags
-                document.getElementById("termInput").value = "";
-                document.getElementById("definitionInput").value = "";
-                document.getElementById("synonymInput").value = "";
-                currentSynonyms = [];
-                aiSuggestions = []; // Vider les suggestions IA
-                renderSynonymTags();
-                // Cacher le conteneur de suggestions IA
-                document.getElementById("aiSuggestionsContainer").classList.add("hidden");
-                clearErrors();
+            // Check if synonym already exists
+            if (currentSynonyms.includes(synonym)) {
+                synonymError.textContent =
+                    "Ce synonyme a déjà été ajouté !";
+                synonymError.classList.remove("hidden");
+                synonymInput.classList.add("border-red-500");
+                return;
             }
 
-            let aiSuggestions = [];
+            currentSynonyms.push(synonym);
+            renderSynonymTags();
+            synonymInput.value = "";
+        }
 
-            // Fonction pour afficher les suggestions IA cliquables
-            function renderAISuggestions() {
-                const container = document.getElementById("aiSuggestionsContainer");
-                
-                if (aiSuggestions.length === 0) {
-                    container.classList.add("hidden");
-                    return;
-                }
+        // Clear all errors
+        function clearErrors() {
+            document.getElementById("termError").classList.add("hidden");
+            document
+                .getElementById("definitionError")
+                .classList.add("hidden");
+            document.getElementById("synonymError").classList.add("hidden");
+            document
+                .getElementById("termInput")
+                .classList.remove("border-red-500");
+            document
+                .getElementById("definitionInput")
+                .classList.remove("border-red-500");
+            document
+                .getElementById("synonymInput")
+                .classList.remove("border-red-500");
+        }
 
-                // Filtrer les suggestions qui ne sont pas déjà dans les tags
-                const availableSuggestions = aiSuggestions.filter(
-                    synonym => !currentSynonyms.includes(synonym)
-                );
+        // Modal functions
+        const modal = document.getElementById("modal");
+        const addTermBtn = document.getElementById("addTermBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const submitBtn = document.getElementById("submitBtn");
+        const modalOverlay = document.getElementById("modalOverlay");
+        const suggestBtn = document.getElementById("suggestBtn");
+        const toast = document.getElementById("toast");
+        const synonymInput = document.getElementById("synonymInput");
 
-                // Prendre 5 suggestions aléatoires maximum
-                const randomSuggestions = availableSuggestions
-                    .sort(() => 0.5 - Math.random())
-                    .slice(0, 5);
+        function openModal() {
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
 
-                if (randomSuggestions.length === 0) {
-                    container.classList.add("hidden");
-                    return;
-                }
+        function closeModal() {
+            modal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+            // Clear inputs and tags
+            document.getElementById("termInput").value = "";
+            document.getElementById("definitionInput").value = "";
+            document.getElementById("synonymInput").value = "";
+            currentSynonyms = [];
+            aiSuggestions = []; // Vider les suggestions IA
+            renderSynonymTags();
+            // Cacher le conteneur de suggestions IA
+            document.getElementById("aiSuggestionsContainer").classList.add("hidden");
+            clearErrors();
+        }
 
-                container.innerHTML = randomSuggestions
-                    .map(synonym => `
+        let aiSuggestions = [];
+
+        // Fonction pour afficher les suggestions IA cliquables
+        function renderAISuggestions() {
+            const container = document.getElementById("aiSuggestionsContainer");
+
+            if (aiSuggestions.length === 0) {
+                container.classList.add("hidden");
+                return;
+            }
+
+            // Filtrer les suggestions qui ne sont pas déjà dans les tags
+            const availableSuggestions = aiSuggestions.filter(
+                synonym => !currentSynonyms.includes(synonym)
+            );
+
+            // Prendre 5 suggestions aléatoires maximum
+            const randomSuggestions = availableSuggestions
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 5);
+
+            if (randomSuggestions.length === 0) {
+                container.classList.add("hidden");
+                return;
+            }
+
+            container.innerHTML = randomSuggestions
+                .map(synonym => `
                         <button 
                             type="button" 
                             class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm hover:bg-blue-200 transition-colors ai-suggestion-btn"
@@ -394,244 +368,244 @@ import "../styles/style.css";
                             <span class="text-blue-600 text-xs">+</span>
                         </button>
                     `)
-                    .join('');
+                .join('');
 
-                container.classList.remove("hidden");
+            container.classList.remove("hidden");
 
-                // Ajouter les événements click aux boutons de suggestion
-                document.querySelectorAll('.ai-suggestion-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const synonym = this.getAttribute('data-synonym');
-                        addAISuggestion(synonym);
-                    });
+            // Ajouter les événements click aux boutons de suggestion
+            document.querySelectorAll('.ai-suggestion-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const synonym = this.getAttribute('data-synonym');
+                    addAISuggestion(synonym);
                 });
+            });
+        }
+
+        // Fonction pour ajouter une suggestion IA aux tags
+        function addAISuggestion(synonym) {
+            const termInput = document.getElementById("termInput");
+            const term = termInput.value.trim();
+
+            // Vérifier que le synonyme n'est pas identique au terme
+            if (synonym.toLowerCase() === term.toLowerCase()) {
+                return;
             }
 
-            // Fonction pour ajouter une suggestion IA aux tags
-            function addAISuggestion(synonym) {
-                const termInput = document.getElementById("termInput");
-                const term = termInput.value.trim();
-                
-                // Vérifier que le synonyme n'est pas identique au terme
-                if (synonym.toLowerCase() === term.toLowerCase()) {
-                    return;
+            // Vérifier que le synonyme n'est pas déjà présent
+            if (!currentSynonyms.includes(synonym)) {
+                currentSynonyms.push(synonym);
+                renderSynonymTags();
+                // Re-rendre les suggestions pour enlever celle qui a été ajoutée
+                renderAISuggestions();
+            }
+        }
+
+        // Fonction pour récupérer les suggestions IA
+        async function fetchAISuggestions() {
+            const termInput = document.getElementById("termInput");
+            const definitionInput = document.getElementById("definitionInput");
+            const suggestBtn = document.getElementById("suggestBtn");
+            const aiSuggestionsContainer = document.getElementById("aiSuggestionsContainer");
+
+            const term = termInput.value.trim();
+            const definition = definitionInput.value.trim();
+
+            if (!term) {
+                showErrorMessage("Veuillez d'abord saisir un terme métier");
+                termInput.focus();
+                return;
+            }
+
+            // Afficher un indicateur de chargement
+            const originalText = suggestBtn.textContent;
+            suggestBtn.textContent = "Recherche...";
+            suggestBtn.disabled = true;
+
+            // Masquer les anciennes suggestions pendant le chargement
+            aiSuggestionsContainer.classList.add("hidden");
+
+            try {
+                const response = await fetch("/api/suggest", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        term: term,
+                        context: definition ? [definition] : []
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "Erreur lors de la requête");
                 }
-                
-                // Vérifier que le synonyme n'est pas déjà présent
-                if (!currentSynonyms.includes(synonym)) {
-                    currentSynonyms.push(synonym);
-                    renderSynonymTags();
-                    // Re-rendre les suggestions pour enlever celle qui a été ajoutée
+
+                const data = await response.json();
+
+                if (data.synonyms && data.synonyms.length > 0) {
+                    // Stocker toutes les suggestions
+                    aiSuggestions = data.synonyms;
+                    // Afficher les suggestions cliquables
                     renderAISuggestions();
-                }
-            }
-
-            // Fonction pour récupérer les suggestions IA
-            async function fetchAISuggestions() {
-                const termInput = document.getElementById("termInput");
-                const definitionInput = document.getElementById("definitionInput");
-                const suggestBtn = document.getElementById("suggestBtn");
-                const aiSuggestionsContainer = document.getElementById("aiSuggestionsContainer");
-                
-                const term = termInput.value.trim();
-                const definition = definitionInput.value.trim();
-
-                if (!term) {
-                    showErrorMessage("Veuillez d'abord saisir un terme métier");
-                    termInput.focus();
-                    return;
-                }
-
-                // Afficher un indicateur de chargement
-                const originalText = suggestBtn.textContent;
-                suggestBtn.textContent = "Recherche...";
-                suggestBtn.disabled = true;
-
-                // Masquer les anciennes suggestions pendant le chargement
-                aiSuggestionsContainer.classList.add("hidden");
-
-                try {
-                    const response = await fetch("/api/suggest", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            term: term,
-                            context: definition ? [definition] : []
-                        }),
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.detail || "Erreur lors de la requête");
-                    }
-
-                    const data = await response.json();
-                    
-                    if (data.synonyms && data.synonyms.length > 0) {
-                        // Stocker toutes les suggestions
-                        aiSuggestions = data.synonyms;
-                        // Afficher les suggestions cliquables
-                        renderAISuggestions();
-                        showSuccessMessage(`${data.synonyms.length} suggestions trouvées`);
-                    } else {
-                        aiSuggestions = [];
-                        showInfoMessage("Aucun synonyme trouvé pour ce terme");
-                    }
-
-                } catch (error) {
-                    console.error("Erreur:", error);
-                    showErrorMessage("Erreur: " + error.message);
+                    showSuccessMessage(`${data.synonyms.length} suggestions trouvées`);
+                } else {
                     aiSuggestions = [];
-                } finally {
-                    // Restaurer le bouton
-                    suggestBtn.textContent = originalText;
-                    suggestBtn.disabled = false;
+                    showInfoMessage("Aucun synonyme trouvé pour ce terme");
                 }
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                showErrorMessage("Erreur: " + error.message);
+                aiSuggestions = [];
+            } finally {
+                // Restaurer le bouton
+                suggestBtn.textContent = originalText;
+                suggestBtn.disabled = false;
+            }
+        }
+
+        // Event listeners
+        addTermBtn.addEventListener("click", openModal);
+        cancelBtn.addEventListener("click", closeModal);
+        modalOverlay.addEventListener("click", closeModal);
+        suggestBtn.addEventListener("click", fetchAISuggestions);
+
+        // Add synonym on Enter key
+        synonymInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                addSynonymFromInput();
+            }
+        });
+
+        // Clear synonym error when typing
+        synonymInput.addEventListener("input", () => {
+            document.getElementById("synonymError").classList.add("hidden");
+            synonymInput.classList.remove("border-red-500");
+        });
+
+        // Clear errors when typing in required fields
+        document
+            .getElementById("termInput")
+            .addEventListener("input", () => {
+                document
+                    .getElementById("termError")
+                    .classList.add("hidden");
+                document
+                    .getElementById("termInput")
+                    .classList.remove("border-red-500");
+            });
+
+        document
+            .getElementById("definitionInput")
+            .addEventListener("input", () => {
+                document
+                    .getElementById("definitionError")
+                    .classList.add("hidden");
+                document
+                    .getElementById("definitionInput")
+                    .classList.remove("border-red-500");
+            });
+
+        submitBtn.addEventListener("click", () => {
+            const termInput = document.getElementById("termInput");
+            const definitionInput =
+                document.getElementById("definitionInput");
+            const term = termInput.value.trim();
+            const definition = definitionInput.value.trim();
+
+            // Clear previous errors
+            clearErrors();
+
+            let hasError = false;
+
+            // Validate term
+            if (!term) {
+                document
+                    .getElementById("termError")
+                    .classList.remove("hidden");
+                termInput.classList.add("border-red-500");
+                hasError = true;
             }
 
-            // Event listeners
-            addTermBtn.addEventListener("click", openModal);
-            cancelBtn.addEventListener("click", closeModal);
-            modalOverlay.addEventListener("click", closeModal);
-            suggestBtn.addEventListener("click", fetchAISuggestions);
+            // Validate definition
+            if (!definition) {
+                document
+                    .getElementById("definitionError")
+                    .classList.remove("hidden");
+                definitionInput.classList.add("border-red-500");
+                hasError = true;
+            }
 
-            // Add synonym on Enter key
-            synonymInput.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    addSynonymFromInput();
-                }
+            if (hasError) return;
+
+            terms.push({
+                id: nextId++,
+                term,
+                definition,
+                synonyms:
+                    currentSynonyms.length > 0 ? [...currentSynonyms] : [],
             });
+            saveTerms();
+            renderTable();
+            closeModal();
+        });
 
-            // Clear synonym error when typing
-            synonymInput.addEventListener("input", () => {
-                document.getElementById("synonymError").classList.add("hidden");
-                synonymInput.classList.remove("border-red-500");
-            });
-
-            // Clear errors when typing in required fields
-            document
-                .getElementById("termInput")
-                .addEventListener("input", () => {
-                    document
-                        .getElementById("termError")
-                        .classList.add("hidden");
-                    document
-                        .getElementById("termInput")
-                        .classList.remove("border-red-500");
-                });
-
-            document
-                .getElementById("definitionInput")
-                .addEventListener("input", () => {
-                    document
-                        .getElementById("definitionError")
-                        .classList.add("hidden");
-                    document
-                        .getElementById("definitionInput")
-                        .classList.remove("border-red-500");
-                });
-
-            submitBtn.addEventListener("click", () => {
-                const termInput = document.getElementById("termInput");
-                const definitionInput =
-                    document.getElementById("definitionInput");
-                const term = termInput.value.trim();
-                const definition = definitionInput.value.trim();
-
-                // Clear previous errors
-                clearErrors();
-
-                let hasError = false;
-
-                // Validate term
-                if (!term) {
-                    document
-                        .getElementById("termError")
-                        .classList.remove("hidden");
-                    termInput.classList.add("border-red-500");
-                    hasError = true;
-                }
-
-                // Validate definition
-                if (!definition) {
-                    document
-                        .getElementById("definitionError")
-                        .classList.remove("hidden");
-                    definitionInput.classList.add("border-red-500");
-                    hasError = true;
-                }
-
-                if (hasError) return;
-
-                terms.push({
-                    id: nextId++,
-                    term,
-                    definition,
-                    synonyms:
-                        currentSynonyms.length > 0 ? [...currentSynonyms] : [],
-                });
-                saveTerms();
-                renderTable();
+        // Close modal on Escape key
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
                 closeModal();
-            });
+            }
+        });
 
-            // Close modal on Escape key
-            document.addEventListener("keydown", (e) => {
-                if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-                    closeModal();
+        document
+            .getElementById("exportBtn")
+            .addEventListener("click", async function() {
+                try {
+                    // Import dynamique côté client
+                    const { generateMarkdown } = await import(
+                        "../lib/export_documents.js"
+                    );
+
+                    // Transformer les termes en format compatible
+                    const exportData = terms.map((term) => [
+                        term.term,
+                        term.definition,
+                        Array.isArray(term.synonyms) ? term.synonyms : [],
+                    ]);
+
+                    generateMarkdown(exportData);
+                } catch (error) {
+                    console.error("Erreur lors de l'export :", error);
+                    alert("Erreur lors de l'export du glossaire");
                 }
             });
 
-            document
-                .getElementById("exportBtn")
-                .addEventListener("click", async function () {
-                    try {
-                        // Import dynamique côté client
-                        const { generateMarkdown } = await import(
-                            "../lib/export_documents.js"
-                        );
+        // Fonctions pour afficher différents types de messages
+        function showSuccessMessage(message) {
+            showMessage(message, "bg-green-100 border-green-400 text-green-700");
+        }
 
-                        // Transformer les termes en format compatible
-                        const exportData = terms.map((term) => [
-                            term.term,
-                            term.definition,
-                            Array.isArray(term.synonyms) ? term.synonyms : [],
-                        ]);
+        function showErrorMessage(message) {
+            showMessage(message, "bg-red-100 border-red-400 text-red-700");
+        }
 
-                        generateMarkdown(exportData);
-                    } catch (error) {
-                        console.error("Erreur lors de l'export :", error);
-                        alert("Erreur lors de l'export du glossaire");
-                    }
-                });
+        function showInfoMessage(message) {
+            showMessage(message, "bg-blue-100 border-blue-400 text-blue-700");
+        }
 
-            // Fonctions pour afficher différents types de messages
-            function showSuccessMessage(message) {
-                showMessage(message, "bg-green-100 border-green-400 text-green-700");
+        function showMessage(message, styles) {
+            // Créer ou réutiliser la toast
+            let toast = document.getElementById("aiToast");
+            if (!toast) {
+                toast = document.createElement("div");
+                toast.id = "aiToast";
+                toast.className = `fixed top-4 right-4 border rounded-lg shadow-lg p-4 z-50 transition-opacity duration-300 ${styles}`;
+                document.body.appendChild(toast);
             }
 
-            function showErrorMessage(message) {
-                showMessage(message, "bg-red-100 border-red-400 text-red-700");
-            }
-
-            function showInfoMessage(message) {
-                showMessage(message, "bg-blue-100 border-blue-400 text-blue-700");
-            }
-
-            function showMessage(message, styles) {
-                // Créer ou réutiliser la toast
-                let toast = document.getElementById("aiToast");
-                if (!toast) {
-                    toast = document.createElement("div");
-                    toast.id = "aiToast";
-                    toast.className = `fixed top-4 right-4 border rounded-lg shadow-lg p-4 z-50 transition-opacity duration-300 ${styles}`;
-                    document.body.appendChild(toast);
-                }
-                
-                toast.innerHTML = `
+            toast.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="flex-1">
                             <p class="font-medium">${message}</p>
@@ -641,25 +615,26 @@ import "../styles/style.css";
                         </button>
                     </div>
                 `;
-                
-                // Auto-suppression après 5 secondes
-                setTimeout(() => {
-                    if (toast.parentElement) {
-                        toast.remove();
-                    }
-                }, 5000);
-            }
 
-            // Permettre d'appuyer sur Entrée dans le champ synonyme pour ajouter
-            synonymInput.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    addSynonymFromInput();
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
                 }
-            });
+            }, 5000);
+        }
 
-            // Initial render
-            renderTable();
-        </script>
-    </body>
+        // Permettre d'appuyer sur Entrée dans le champ synonyme pour ajouter
+        synonymInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                addSynonymFromInput();
+            }
+        });
+
+        // Initial render
+        renderTable();
+    </script>
+</body>
+
 </html>
