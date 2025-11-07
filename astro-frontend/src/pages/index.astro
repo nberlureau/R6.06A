@@ -404,11 +404,13 @@ import "../styles/style.css";
         async function fetchAISuggestions() {
             const termInput = document.getElementById("termInput");
             const definitionInput = document.getElementById("definitionInput");
+            const synonymInput = document.getElementById("synonymInput");
             const suggestBtn = document.getElementById("suggestBtn");
             const aiSuggestionsContainer = document.getElementById("aiSuggestionsContainer");
 
             const term = termInput.value.trim();
             const definition = definitionInput.value.trim();
+            const synonyms = [...currentSynonyms, synonymInput.value.trim()];
 
             if (!term) {
                 showErrorMessage("Veuillez d'abord saisir un terme métier");
@@ -432,7 +434,8 @@ import "../styles/style.css";
                     },
                     body: JSON.stringify({
                         term: term,
-                        context: definition ? [definition] : []
+                        definition: definition,
+                        synonyms: synonyms
                     }),
                 });
 

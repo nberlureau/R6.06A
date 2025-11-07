@@ -66,7 +66,8 @@ build_astro()
 # Modèles Pydantic pour la validation des données
 class SynonymRequest(BaseModel):
     term: str
-    context: list[str] | None = []
+    definition: str | None
+    synonyms: list[str]
 
 
 class SynonymResponse(BaseModel):
@@ -116,14 +117,11 @@ async def read_index():
 async def suggest_synonyms(request: SynonymRequest):
     try:
         # Appeler la fonction get_synonyms avec le terme et le contexte
-        synonyms_with_scores = await get_synonyms(
-            words=[request.term],
-            context=request.context,
-            threshold=0.3,  # Seuil de similarité
+        synonyms = await get_synonyms(
+            word=request.term,
+            definition=request.definition,
+            synonyms=request.synonyms,
         )
-
-        # Extraire seulement les mots des synonymes (sans les scores)
-        synonyms = [synonym for synonym, score in synonyms_with_scores]
 
         return SynonymResponse(synonyms=synonyms)
 
