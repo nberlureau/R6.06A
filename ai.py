@@ -10,12 +10,14 @@ async def get_synonyms(
 ) -> list[str]:
     word = word.strip().lower()
     synonyms = [synonym.strip().lower() for synonym in synonyms if synonym.strip()]
-    prompt = f"""
-Find synonyms of the word "{word}" defined by:
-> {"\n > ".join(definition.split("\n"))}
 
-{f"The following words are synonyms of the word: {", ".join(synonyms)}" if synonyms else ""}
-Your response MUST only include the synonyms separated by commas.
+    prompt = f"""
+Find synonyms of the word "{word}"{f" as defined by:\n> {"\n > ".join(definition.split("\n"))}" if definition else "."}
+
+{f"Already known synonyms for the correct sense of the word: {", ".join(synonyms)}" if synonyms else ""}
+
+Your response must be in the original word's language.
+Respond ONLY with the synonyms, separated by commas. Do not include any other text in your response.
 """
 
     response = (
