@@ -1,24 +1,23 @@
-
-function generateMarkdown(data, headers = ["Terme", "Définition", "Synonymes"], title = "Glossaire") {
+function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary") {
   if (!Array.isArray(data) || data.some(row => !Array.isArray(row) || row.length !== headers.length)) {
-    throw new Error(`Erreur dans les données`);
+    throw new Error(`Invalid data format`);
   }
 
-  const titleLine = `# ${title}`;
+  const titleLine = `# ${title}\n\n`;
   const headerRow = `| ${headers.join(" | ")} |`;
   const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`;
 
   const dataRows = data.map(row => {
     const formattedRow = row.map(cell => {
       if (Array.isArray(cell)) {
-        return cell.join(", ");
+        return cell.length > 0 ? cell.join(", ") : "-";
       }
-      return String(cell).replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      return String(cell || "-").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
     });
     return `| ${formattedRow.join(" | ")} |`;
   }).join("\n");
 
-  const markdownTable = [titleLine, headerRow, separatorRow, dataRows].join("\n");
+  const markdownTable = titleLine + headerRow + "\n" + separatorRow + "\n" + dataRows;
 
   const blob = new Blob([markdownTable], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -31,52 +30,47 @@ function generateMarkdown(data, headers = ["Terme", "Définition", "Synonymes"],
   URL.revokeObjectURL(url);
 }
 
-
 function parseMarkdown(markdownContent) {
-            const lines = markdownContent.split('\n').filter(line => line.trim() !== '');
-            
-            // Extraction du titre
-            const titleLine = lines.find(line => line.startsWith('#'));
-            if (!titleLine) throw new Error("Titre non trouvé");
-            const title = titleLine.replace(/^#\s*/, '');
-            
-            // Recherche du tableau
-            const tableStart = lines.findIndex(line => line.trim().startsWith('|'));
-            if (tableStart === -1) throw new Error("Aucun tableau trouvé");
+  const lines = markdownContent.split('\n').filter(line => line.trim() !== '');
 
-            // Extraction des en-têtes
-            const headers = lines[tableStart]
-                .split('|')
-                .filter(cell => cell.trim() !== '')
-                .map(cell => cell.trim());
+  // Extraction du titre
+  const titleLine = lines.find(line => line.startsWith('#'));
+  if (!titleLine) throw new Error("Title not found");
+  const title = titleLine.replace(/^#\s*/, '');
 
-            // Extraction des données
-            const data = [];
-            for (let i = tableStart + 2; i < lines.length; i++) {
-                if (!lines[i].trim().startsWith('|')) continue;
-                
-                const row = lines[i]
-                    .split('|')
-                    .filter(cell => cell.trim() !== '')
-                    .map(cell => cell.trim());
-                
-                if (row.length === headers.length) {
-                    data.push(row);
-                }
-            }
+  // Recherche du tableau
+  const tableStart = lines.findIndex(line => line.trim().startsWith('|'));
+  if (tableStart === -1) throw new Error("No table found");
 
-            return {
-                title: title,
-                headers: headers,
-                data: data
-            };
+  // Extraction des en-têtes
+  const headers = lines[tableStart]
+    .split('|')
+    .filter(cell => cell.trim() !== '')
+    .map(cell => cell.trim());
+
+  // Extraction des données
+  const data = [];
+  for (let i = tableStart + 2; i < lines.length; i++) {
+    if (!lines[i].trim().startsWith('|')) continue;
+
+    const row = lines[i]
+      .split('|')
+      .filter(cell => cell.trim() !== '')
+      .map(cell => cell.trim());
+
+    if (row.length === headers.length) {
+      data.push(row);
+    }
+  }
+
+  return {
+    title: title,
+    headers: headers,
+    data: data
+  };
 }
 
-        
-
-
-
-function generateJSON(data, headers = ["Terme", "Définition", "Synonymes"], title = "Glossaire") {
+function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary") {
   const structuredData = {
     title: title,
     headers: headers,
@@ -97,9 +91,9 @@ function generateJSON(data, headers = ["Terme", "Définition", "Synonymes"], tit
 function parseJSON(jsonContent) {
   try {
     const parsedData = JSON.parse(jsonContent);
-    
+
     if (!parsedData.title || !parsedData.headers || !parsedData.data) {
-      throw new Error("Structure JSON invalide");
+      throw new Error("Invalid JSON structure");
     }
 
     return {
@@ -108,7 +102,9 @@ function parseJSON(jsonContent) {
       data: parsedData.data
     };
   } catch (e) {
-    throw new Error("Erreur de parsing JSON: " + e.message);
+    throw new Error("JSON parsing error: " + e.message);
   }
 }
 
+// Exportez les fonctions pour les rendre disponibles
+export { generateMarkdown, parseMarkdown, generateJSON, parseJSON };
