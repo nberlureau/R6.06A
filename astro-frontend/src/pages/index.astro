@@ -10,7 +10,7 @@ import "../styles/style.css";
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GlossAI - Glossaire</title>
+    <title>GlossAI - Glossary</title>
 </head>
 
 <body class="bg-gray-50">
@@ -27,7 +27,7 @@ import "../styles/style.css";
             <button
                 id="exportBtn"
                 class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                Exporter
+                Export
             </button>
         </div>
     </header>
@@ -37,12 +37,12 @@ import "../styles/style.css";
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-semibold text-gray-900">
-                    Glossaire
+                    Glossary
                 </h2>
                 <button
                     id="addTermBtn"
                     class="bg-primary hover-bg-primary text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
-                    + Nouveau terme
+                    + New word
                 </button>
             </div>
 
@@ -53,17 +53,16 @@ import "../styles/style.css";
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
                             <th
-                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Terme</th>
+                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Word</th>
                             <th
-                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Définition</th>
+                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Definition</th>
                             <th
-                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Synonymes</th>
+                                class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Synonyms</th>
                         </tr>
                     </thead>
                     <tbody
                         id="glossaryTable"
                         class="divide-y divide-gray-200">
-                        <!-- Terms will be inserted here by JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -80,62 +79,62 @@ import "../styles/style.css";
             <div
                 class="modal-content bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-10 relative">
                 <h3 class="text-2xl font-semibold text-gray-900 mb-8">
-                    Ajout d'un nouveau terme métier
+                    Addition of a new word
                 </h3>
 
                 <div
                     class="bg-gray-50 rounded-2xl p-8 space-y-6 border border-gray-100">
                     <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                        Détails du terme métier
+                        Word details
                     </h4>
 
                     <div>
                         <label
                             class="block text-sm font-medium text-gray-900 mb-2">
-                            Mot <span class="text-red-600">*</span>
+                            Word <span class="text-red-600">*</span>
                         </label>
                         <input
                             type="text"
                             id="termInput"
-                            placeholder="Entrez le nom du terme métier"
+                            placeholder="Enter the word"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white" />
                         <p
                             id="termError"
                             class="text-red-600 text-sm mt-1 hidden">
-                            Le champ est obligatoire !
+                            This field is required!
                         </p>
                     </div>
 
                     <div>
                         <label
                             class="block text-sm font-medium text-gray-900 mb-2">
-                            Définition <span class="text-red-600">*</span>
+                            Definition <span class="text-red-600">*</span>
                         </label>
                         <textarea
                             id="definitionInput"
-                            placeholder="Entrez la définition du terme métier"
+                            placeholder="Enter the definition of the word"
                             rows="4"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all resize-none bg-white"></textarea>
                         <p
                             id="definitionError"
                             class="text-red-600 text-sm mt-1 hidden">
-                            Le champ est obligatoire !
+                            This field is required!
                         </p>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-900 mb-2">
-                            Synonyme
+                            Synonym
                         </label>
                         <div class="flex items-center gap-2 flex-wrap">
                             <input
                                 type="text"
                                 id="synonymInput"
-                                placeholder="Entrez le synonymes du terme métier"
+                                placeholder="Enter synonyms for the word"
                                 class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-sm" />
                             <!-- Tags container inline -->
                             <div id="synonymTags" class="flex flex-wrap gap-2">
-                                <!-- Tags will be inserted here -->
+                                
                             </div>
                         </div>
                         <p id="synonymError" class="text-red-600 text-sm mt-1 hidden">
@@ -144,7 +143,7 @@ import "../styles/style.css";
                         <button
                             id="suggestBtn"
                             class="mt-3 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white">
-                            Suggestions IA
+                            AI Suggestions
                         </button>
 
                         <!-- Conteneur pour les suggestions IA -->
@@ -158,12 +157,12 @@ import "../styles/style.css";
                     <button
                         id="cancelBtn"
                         class="px-8 py-3 border border-gray-300 rounded-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors">
-                        Annuler
+                        Cancel
                     </button>
                     <button
                         id="submitBtn"
                         class="px-8 py-3 bg-primary hover-bg-primary text-white rounded-lg font-medium transition-colors">
-                        Ajouter
+                        Add
                     </button>
                 </div>
             </div>
@@ -190,9 +189,9 @@ import "../styles/style.css";
                 </svg>
             </div>
             <div>
-                <p class="font-medium text-gray-900">Suggestions IA</p>
+                <p class="font-medium text-gray-900">AI Suggestions</p>
                 <p class="text-sm text-gray-600">
-                    Fonctionnalité en cours de développement
+                    Feature under development
                 </p>
             </div>
         </div>
@@ -262,8 +261,7 @@ import "../styles/style.css";
 
             // Check if synonym equals the term
             if (synonym.toLowerCase() === term.toLowerCase()) {
-                synonymError.textContent =
-                    "Le synonyme ne peut pas être identique au terme !";
+                synonymError.textContent = "The synonym cannot be identical to the term!";
                 synonymError.classList.remove("hidden");
                 synonymInput.classList.add("border-red-500");
                 return;
@@ -271,8 +269,7 @@ import "../styles/style.css";
 
             // Check if synonym already exists
             if (currentSynonyms.includes(synonym)) {
-                synonymError.textContent =
-                    "Ce synonyme a déjà été ajouté !";
+                synonymError.textContent = "This synonym has already been added!";
                 synonymError.classList.remove("hidden");
                 synonymInput.classList.add("border-red-500");
                 return;
@@ -413,14 +410,14 @@ import "../styles/style.css";
             const synonyms = [...currentSynonyms, synonymInput.value.trim()];
 
             if (!term) {
-                showErrorMessage("Veuillez d'abord saisir un terme métier");
+                showErrorMessage("Please enter a word first.");
                 termInput.focus();
                 return;
             }
 
             // Afficher un indicateur de chargement
             const originalText = suggestBtn.textContent;
-            suggestBtn.textContent = "Recherche...";
+            suggestBtn.textContent = "Searching...";
             suggestBtn.disabled = true;
 
             // Masquer les anciennes suggestions pendant le chargement
@@ -451,15 +448,15 @@ import "../styles/style.css";
                     aiSuggestions = data.synonyms;
                     // Afficher les suggestions cliquables
                     renderAISuggestions();
-                    showSuccessMessage(`${data.synonyms.length} suggestions trouvées`);
+                    showSuccessMessage(`${data.synonyms.length} suggestions found`);
                 } else {
                     aiSuggestions = [];
-                    showInfoMessage("Aucun synonyme trouvé pour ce terme");
+                    showInfoMessage("No synonyms found for this word");
                 }
 
             } catch (error) {
-                console.error("Erreur:", error);
-                showErrorMessage("Erreur: " + error.message);
+                console.error("Error:", error);
+                showErrorMessage("Error: " + error.message);
                 aiSuggestions = [];
             } finally {
                 // Restaurer le bouton
@@ -581,7 +578,7 @@ import "../styles/style.css";
                     generateMarkdown(exportData);
                 } catch (error) {
                     console.error("Erreur lors de l'export :", error);
-                    alert("Erreur lors de l'export du glossaire");
+                    alert("Error exporting the glossary");
                 }
             });
 
