@@ -2,12 +2,10 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "glossai",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "fr.unilim.iut.glossai",
   "build": {
     "frontendDist": "../frontend/dist",
-    "devUrl": "http://127.0.0.1:32791",
-    "beforeDevCommand": "python backend/main.py",
-    "beforeBuildCommand": "python backend/main.py"
+    "devUrl": "http://127.0.0.1:32791"
   },
   "app": {
     "windows": [
@@ -25,13 +23,21 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": [
+      "appimage",
+      "msi",
+      "nsis"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
+    ],
+    "resources": [],
+    "externalBin": [
+      "../build/dist/backend"
     ]
   }
 }
