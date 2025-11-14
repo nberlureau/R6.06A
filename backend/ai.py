@@ -1,13 +1,22 @@
 import asyncio
 
+import ollama
 from ollama import AsyncClient
+
+MODEL = "qwen3:0.6b"
 
 
 async def get_synonyms(
     word: str,
     definition: str,
     synonyms: list[str],
+    context: list[str],
 ) -> list[str]:
+    try:
+        ollama.show(MODEL)
+    except:
+        ollama.pull(MODEL)
+
     word = word.strip().lower()
     synonyms = [synonym.strip().lower() for synonym in synonyms if synonym.strip()]
 
@@ -22,7 +31,7 @@ Respond ONLY with the synonyms, separated by commas. Do not include any other te
 
     response = (
         await AsyncClient().generate(
-            model="qwen3:0.6b",
+            model=MODEL,
             prompt=prompt,
             think=False,
         )
