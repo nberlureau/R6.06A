@@ -761,6 +761,13 @@ import "../styles/style.css";
                 return;
             }
 
+            // Get glossary name and description from currentGlossary
+            const glossaryName = currentGlossary ? currentGlossary.name : "";
+            const glossaryDescription = currentGlossary ? currentGlossary.description : "";
+
+            // Get all terms from the glossary for context (just the words)
+            const contextTerms = terms.map(t => t.term);
+
             const originalText = suggestBtn.textContent;
             suggestBtn.textContent = "Searching...";
             suggestBtn.disabled = true;
@@ -771,7 +778,9 @@ import "../styles/style.css";
                     term,
                     definition,
                     synonyms,
-                    context: []
+                    glossaryName,
+                    glossaryDescription,
+                    context: contextTerms
                 });
 
                 aiSuggestions = result;
