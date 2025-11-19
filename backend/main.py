@@ -10,6 +10,8 @@ app = FastAPI(title="GlossAI")
 
 # Modèles Pydantic pour la validation des données
 class SynonymRequest(BaseModel):
+    glossary_name: str
+    glossary_description: str
     term: str
     definition: str | None
     synonyms: list[str]
@@ -25,6 +27,8 @@ async def suggest_synonyms(request: SynonymRequest):
     try:
         # Appeler la fonction get_synonyms avec le terme et le contexte
         synonyms = await get_synonyms(
+            glossary_name=request.glossary_name,
+            glossary_description=request.glossary_description,
             word=request.term,
             definition=request.definition,
             synonyms=request.synonyms,

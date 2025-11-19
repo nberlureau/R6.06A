@@ -44,6 +44,8 @@ async fn start_services(app_handle: tauri::AppHandle) -> Result<(), String> {
 
 #[tauri::command]
 async fn suggest_synonyms(
+    glossary_name: String,
+    glossary_description: String,
     term: String,
     definition: Option<String>,
     synonyms: Vec<String>,
@@ -53,6 +55,8 @@ async fn suggest_synonyms(
     let url = format!("http://127.0.0.1:{}/api/suggest", BACKEND_PORT);
 
     let payload = serde_json::json!({
+        "glossary_name": glossary_name,
+        "glossary_description": glossary_description,
         "term": term,
         "definition": definition,
         "synonyms": synonyms,

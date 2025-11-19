@@ -7,6 +7,8 @@ MODEL = "qwen3:0.6b"
 
 
 async def get_synonyms(
+    glossary_name: str,
+    glossary_description: str,
     word: str,
     definition: str,
     synonyms: list[str],
@@ -21,6 +23,11 @@ async def get_synonyms(
     synonyms = [synonym.strip().lower() for synonym in synonyms if synonym.strip()]
 
     prompt = f"""
+In a ubiquitous language glossary named "{glossary_name}" and with the following description:
+{"> " + "\n > ".join(glossary_description.split("\n")) if glossary_description else "No description"}
+
+The glossary currently contains the following words: {", ".join(context)}
+
 Find synonyms of the word "{word}"{f" as defined by:\n> {"\n > ".join(definition.split("\n"))}" if definition else "."}
 
 {f"Already known synonyms for the correct sense of the word: {", ".join(synonyms)}" if synonyms else ""}
