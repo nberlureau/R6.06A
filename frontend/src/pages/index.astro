@@ -168,24 +168,42 @@ import "../styles/style.css";
                         </h4>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">
+                            <label
+                                class="block text-sm font-medium text-gray-900 mb-2"
+                            >
                                 Name
                             </label>
-                            <p id="viewGlossaryName" class="text-gray-900 text-lg"></p>
+                            <p
+                                id="viewGlossaryName"
+                                class="text-gray-900 text-lg"
+                            >
+                            </p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">
+                            <label
+                                class="block text-sm font-medium text-gray-900 mb-2"
+                            >
                                 Description
                             </label>
-                            <p id="viewGlossaryDescription" class="text-gray-600 text-lg"></p>
+                            <p
+                                id="viewGlossaryDescription"
+                                class="text-gray-600 text-lg"
+                            >
+                            </p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">
+                            <label
+                                class="block text-sm font-medium text-gray-900 mb-2"
+                            >
                                 Number of Terms
                             </label>
-                            <p id="viewGlossaryTermCount" class="text-gray-600 text-lg"></p>
+                            <p
+                                id="viewGlossaryTermCount"
+                                class="text-gray-600 text-lg"
+                            >
+                            </p>
                         </div>
                     </div>
 
@@ -446,13 +464,16 @@ import "../styles/style.css";
             };
 
             window.viewGlossary = function (id) {
-                const glossary = glossaries.find(g => g.id === id);
+                const glossary = glossaries.find((g) => g.id === id);
                 if (!glossary) return;
 
                 // Remplir les informations dans la modale View
-                document.getElementById("viewGlossaryName").textContent = glossary.name;
-                document.getElementById("viewGlossaryDescription").textContent = glossary.description;
-                document.getElementById("viewGlossaryTermCount").textContent = glossary.terms.length;
+                document.getElementById("viewGlossaryName").textContent =
+                    glossary.name;
+                document.getElementById("viewGlossaryDescription").textContent =
+                    glossary.description;
+                document.getElementById("viewGlossaryTermCount").textContent =
+                    glossary.terms.length;
 
                 // Configurer le bouton "Open Glossary" pour rediriger
                 document.getElementById("openGlossaryBtn").onclick = () => {
@@ -463,14 +484,16 @@ import "../styles/style.css";
             };
 
             window.editGlossary = function (id) {
-                const glossary = glossaries.find(g => g.id === id);
+                const glossary = glossaries.find((g) => g.id === id);
                 if (!glossary) return;
 
                 currentEditGlossaryId = id;
 
                 // Remplir les champs avec les valeurs actuelles
-                document.getElementById("editGlossaryNameInput").value = glossary.name;
-                document.getElementById("editGlossaryDescriptionInput").value = glossary.description;
+                document.getElementById("editGlossaryNameInput").value =
+                    glossary.name;
+                document.getElementById("editGlossaryDescriptionInput").value =
+                    glossary.description;
 
                 openEditGlossaryModal();
             };
@@ -484,28 +507,50 @@ import "../styles/style.css";
             };
 
             // ===== GESTION DES MODALES =====
-            const newGlossaryModal = document.getElementById("newGlossaryModal");
+            const newGlossaryModal =
+                document.getElementById("newGlossaryModal");
             const newGlossaryBtn = document.getElementById("newGlossaryBtn");
-            const cancelNewGlossaryBtn = document.getElementById("cancelNewGlossaryBtn");
-            const submitNewGlossaryBtn = document.getElementById("submitNewGlossaryBtn");
-            const newGlossaryModalOverlay = document.getElementById("newGlossaryModalOverlay");
+            const cancelNewGlossaryBtn = document.getElementById(
+                "cancelNewGlossaryBtn",
+            );
+            const submitNewGlossaryBtn = document.getElementById(
+                "submitNewGlossaryBtn",
+            );
+            const newGlossaryModalOverlay = document.getElementById(
+                "newGlossaryModalOverlay",
+            );
 
-            const viewGlossaryModal = document.getElementById("viewGlossaryModal");
-            const viewGlossaryModalOverlay = document.getElementById("viewGlossaryModalOverlay");
-            const closeViewGlossaryBtn = document.getElementById("closeViewGlossaryBtn");
+            const viewGlossaryModal =
+                document.getElementById("viewGlossaryModal");
+            const viewGlossaryModalOverlay = document.getElementById(
+                "viewGlossaryModalOverlay",
+            );
+            const closeViewGlossaryBtn = document.getElementById(
+                "closeViewGlossaryBtn",
+            );
 
-            const editGlossaryModal = document.getElementById("editGlossaryModal");
-            const editGlossaryModalOverlay = document.getElementById("editGlossaryModalOverlay");
-            const cancelEditGlossaryBtn = document.getElementById("cancelEditGlossaryBtn");
-            const submitEditGlossaryBtn = document.getElementById("submitEditGlossaryBtn");
+            const editGlossaryModal =
+                document.getElementById("editGlossaryModal");
+            const editGlossaryModalOverlay = document.getElementById(
+                "editGlossaryModalOverlay",
+            );
+            const cancelEditGlossaryBtn = document.getElementById(
+                "cancelEditGlossaryBtn",
+            );
+            const submitEditGlossaryBtn = document.getElementById(
+                "submitEditGlossaryBtn",
+            );
 
             const importModal = document.getElementById("importModal");
-            const importGlossaryBtn = document.getElementById("importGlossaryBtn");
+            const importGlossaryBtn =
+                document.getElementById("importGlossaryBtn");
             const importCancelBtn = document.getElementById("importCancelBtn");
-            const importModalOverlay = document.getElementById("importModalOverlay");
+            const importModalOverlay =
+                document.getElementById("importModalOverlay");
             const importDropZone = document.getElementById("importDropZone");
             const importFileInput = document.getElementById("importFileInput");
-            const importConfirmBtn = document.getElementById("importConfirmBtn");
+            const importConfirmBtn =
+                document.getElementById("importConfirmBtn");
             const importError = document.getElementById("importError");
 
             function openNewGlossaryModal() {
@@ -522,10 +567,18 @@ import "../styles/style.css";
             }
 
             function clearNewGlossaryErrors() {
-                document.getElementById("glossaryNameError").classList.add("hidden");
-                document.getElementById("glossaryDescriptionError").classList.add("hidden");
-                document.getElementById("glossaryNameInput").classList.remove("border-red-500");
-                document.getElementById("glossaryDescriptionInput").classList.remove("border-red-500");
+                document
+                    .getElementById("glossaryNameError")
+                    .classList.add("hidden");
+                document
+                    .getElementById("glossaryDescriptionError")
+                    .classList.add("hidden");
+                document
+                    .getElementById("glossaryNameInput")
+                    .classList.remove("border-red-500");
+                document
+                    .getElementById("glossaryDescriptionInput")
+                    .classList.remove("border-red-500");
             }
 
             function openViewGlossaryModal() {
@@ -551,10 +604,18 @@ import "../styles/style.css";
             }
 
             function clearEditGlossaryErrors() {
-                document.getElementById("editGlossaryNameError").classList.add("hidden");
-                document.getElementById("editGlossaryDescriptionError").classList.add("hidden");
-                document.getElementById("editGlossaryNameInput").classList.remove("border-red-500");
-                document.getElementById("editGlossaryDescriptionInput").classList.remove("border-red-500");
+                document
+                    .getElementById("editGlossaryNameError")
+                    .classList.add("hidden");
+                document
+                    .getElementById("editGlossaryDescriptionError")
+                    .classList.add("hidden");
+                document
+                    .getElementById("editGlossaryNameInput")
+                    .classList.remove("border-red-500");
+                document
+                    .getElementById("editGlossaryDescriptionInput")
+                    .classList.remove("border-red-500");
             }
 
             function openImportModal() {
@@ -572,45 +633,91 @@ import "../styles/style.css";
 
             // ===== ÉVÉNEMENTS =====
             newGlossaryBtn.addEventListener("click", openNewGlossaryModal);
-            cancelNewGlossaryBtn.addEventListener("click", closeNewGlossaryModal);
-            newGlossaryModalOverlay.addEventListener("click", closeNewGlossaryModal);
+            cancelNewGlossaryBtn.addEventListener(
+                "click",
+                closeNewGlossaryModal,
+            );
+            newGlossaryModalOverlay.addEventListener(
+                "click",
+                closeNewGlossaryModal,
+            );
 
-            closeViewGlossaryBtn.addEventListener("click", closeViewGlossaryModal);
-            viewGlossaryModalOverlay.addEventListener("click", closeViewGlossaryModal);
+            closeViewGlossaryBtn.addEventListener(
+                "click",
+                closeViewGlossaryModal,
+            );
+            viewGlossaryModalOverlay.addEventListener(
+                "click",
+                closeViewGlossaryModal,
+            );
 
-            cancelEditGlossaryBtn.addEventListener("click", closeEditGlossaryModal);
-            editGlossaryModalOverlay.addEventListener("click", closeEditGlossaryModal);
+            cancelEditGlossaryBtn.addEventListener(
+                "click",
+                closeEditGlossaryModal,
+            );
+            editGlossaryModalOverlay.addEventListener(
+                "click",
+                closeEditGlossaryModal,
+            );
 
             importGlossaryBtn.addEventListener("click", openImportModal);
             importCancelBtn.addEventListener("click", closeImportModal);
             importModalOverlay.addEventListener("click", closeImportModal);
-            importDropZone.addEventListener("click", () => importFileInput.click());
+            importDropZone.addEventListener("click", () =>
+                importFileInput.click(),
+            );
 
             // Clear errors on input
-            document.getElementById("glossaryNameInput").addEventListener("input", () => {
-                document.getElementById("glossaryNameError").classList.add("hidden");
-                document.getElementById("glossaryNameInput").classList.remove("border-red-500");
-            });
+            document
+                .getElementById("glossaryNameInput")
+                .addEventListener("input", () => {
+                    document
+                        .getElementById("glossaryNameError")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("glossaryNameInput")
+                        .classList.remove("border-red-500");
+                });
 
-            document.getElementById("glossaryDescriptionInput").addEventListener("input", () => {
-                document.getElementById("glossaryDescriptionError").classList.add("hidden");
-                document.getElementById("glossaryDescriptionInput").classList.remove("border-red-500");
-            });
+            document
+                .getElementById("glossaryDescriptionInput")
+                .addEventListener("input", () => {
+                    document
+                        .getElementById("glossaryDescriptionError")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("glossaryDescriptionInput")
+                        .classList.remove("border-red-500");
+                });
 
-            document.getElementById("editGlossaryNameInput").addEventListener("input", () => {
-                document.getElementById("editGlossaryNameError").classList.add("hidden");
-                document.getElementById("editGlossaryNameInput").classList.remove("border-red-500");
-            });
+            document
+                .getElementById("editGlossaryNameInput")
+                .addEventListener("input", () => {
+                    document
+                        .getElementById("editGlossaryNameError")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("editGlossaryNameInput")
+                        .classList.remove("border-red-500");
+                });
 
-            document.getElementById("editGlossaryDescriptionInput").addEventListener("input", () => {
-                document.getElementById("editGlossaryDescriptionError").classList.add("hidden");
-                document.getElementById("editGlossaryDescriptionInput").classList.remove("border-red-500");
-            });
+            document
+                .getElementById("editGlossaryDescriptionInput")
+                .addEventListener("input", () => {
+                    document
+                        .getElementById("editGlossaryDescriptionError")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("editGlossaryDescriptionInput")
+                        .classList.remove("border-red-500");
+                });
 
             // Submit new glossary
             submitNewGlossaryBtn.addEventListener("click", () => {
                 const nameInput = document.getElementById("glossaryNameInput");
-                const descriptionInput = document.getElementById("glossaryDescriptionInput");
+                const descriptionInput = document.getElementById(
+                    "glossaryDescriptionInput",
+                );
                 const name = nameInput.value.trim();
                 const description = descriptionInput.value.trim();
 
@@ -618,13 +725,17 @@ import "../styles/style.css";
                 let hasError = false;
 
                 if (!name) {
-                    document.getElementById("glossaryNameError").classList.remove("hidden");
+                    document
+                        .getElementById("glossaryNameError")
+                        .classList.remove("hidden");
                     nameInput.classList.add("border-red-500");
                     hasError = true;
                 }
 
                 if (!description) {
-                    document.getElementById("glossaryDescriptionError").classList.remove("hidden");
+                    document
+                        .getElementById("glossaryDescriptionError")
+                        .classList.remove("hidden");
                     descriptionInput.classList.add("border-red-500");
                     hasError = true;
                 }
@@ -650,8 +761,12 @@ import "../styles/style.css";
 
             // Submit edit glossary
             submitEditGlossaryBtn.addEventListener("click", () => {
-                const nameInput = document.getElementById("editGlossaryNameInput");
-                const descriptionInput = document.getElementById("editGlossaryDescriptionInput");
+                const nameInput = document.getElementById(
+                    "editGlossaryNameInput",
+                );
+                const descriptionInput = document.getElementById(
+                    "editGlossaryDescriptionInput",
+                );
                 const name = nameInput.value.trim();
                 const description = descriptionInput.value.trim();
 
@@ -659,13 +774,17 @@ import "../styles/style.css";
                 let hasError = false;
 
                 if (!name) {
-                    document.getElementById("editGlossaryNameError").classList.remove("hidden");
+                    document
+                        .getElementById("editGlossaryNameError")
+                        .classList.remove("hidden");
                     nameInput.classList.add("border-red-500");
                     hasError = true;
                 }
 
                 if (!description) {
-                    document.getElementById("editGlossaryDescriptionError").classList.remove("hidden");
+                    document
+                        .getElementById("editGlossaryDescriptionError")
+                        .classList.remove("hidden");
                     descriptionInput.classList.add("border-red-500");
                     hasError = true;
                 }
@@ -673,7 +792,9 @@ import "../styles/style.css";
                 if (hasError) return;
 
                 // Update glossary
-                const glossaryIndex = glossaries.findIndex(g => g.id === currentEditGlossaryId);
+                const glossaryIndex = glossaries.findIndex(
+                    (g) => g.id === currentEditGlossaryId,
+                );
                 if (glossaryIndex !== -1) {
                     glossaries[glossaryIndex].name = name;
                     glossaries[glossaryIndex].description = description;
@@ -684,6 +805,7 @@ import "../styles/style.css";
             });
 
             // Import glossary - CORRECTION IMPORTANTE
+            // Import glossary - VERSION AVEC IMPORT DES FONCTIONS
             importConfirmBtn.addEventListener("click", async () => {
                 const file = importFileInput.files[0];
                 if (!file) {
@@ -694,7 +816,8 @@ import "../styles/style.css";
 
                 const fileExtension = file.name.split(".").pop().toLowerCase();
                 if (!["md", "json"].includes(fileExtension)) {
-                    importError.textContent = "Please select a .md or .json file";
+                    importError.textContent =
+                        "Please select a .md or .json file";
                     importError.classList.remove("hidden");
                     return;
                 }
@@ -705,68 +828,25 @@ import "../styles/style.css";
                         const fileContent = e.target.result;
 
                         if (fileExtension === "md") {
-                            // Fonction de parsing Markdown simplifiée
-                            const parseMarkdown = (content) => {
-                                const lines = content.split('\n').filter(line => line.trim());
-                                const data = [];
-                                let title = "Imported Glossary";
-                                
-                                // Essayer de trouver un titre
-                                for (const line of lines) {
-                                    if (line.startsWith('# ')) {
-                                        title = line.replace('# ', '').trim();
-                                        break;
-                                    }
-                                }
-
-                                // Parser les lignes de données
-                                for (const line of lines) {
-                                    if (line.startsWith('|') && !line.startsWith('| ---')) {
-                                        const cells = line.split('|').filter(cell => cell.trim() && cell !== '---');
-                                        if (cells.length >= 2) {
-                                            const term = cells[0].trim();
-                                            const definition = cells[1].trim();
-                                            let synonyms = [];
-                                            
-                                            if (cells.length >= 3) {
-                                                const synonymsStr = cells[2].trim();
-                                                synonyms = synonymsStr.split(',').map(s => s.trim()).filter(s => s);
-                                            }
-                                            
-                                            data.push([term, definition, synonyms]);
-                                        }
-                                    }
-                                }
-
-                                // Si pas de format tableau, essayer un autre format
-                                if (data.length === 0) {
-                                    for (const line of lines) {
-                                        if (line.includes(':')) {
-                                            const parts = line.split(':');
-                                            if (parts.length >= 2) {
-                                                const term = parts[0].trim();
-                                                const definition = parts.slice(1).join(':').trim();
-                                                data.push([term, definition, []]);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                return { title, data };
-                            };
-
+                            const { parseMarkdown } = await import(
+                                "../lib/export_documents.js"
+                            );
                             const parsedData = parseMarkdown(fileContent);
 
                             // Create new glossary from imported data
                             const newGlossary = {
                                 id: nextGlossaryId++,
                                 name: parsedData.title || "Imported Glossary",
-                                description: "Imported from Markdown file",
+                                description:
+                                    parsedData.description ||
+                                    "Imported from Markdown file",
                                 terms: parsedData.data.map((row, index) => ({
                                     id: index + 1,
                                     term: row[0],
                                     definition: row[1],
-                                    synonyms: Array.isArray(row[2]) ? row[2] : [],
+                                    synonyms: Array.isArray(row[2])
+                                        ? row[2]
+                                        : [],
                                 })),
                             };
 
@@ -774,49 +854,28 @@ import "../styles/style.css";
                             saveGlossaries();
                             renderGlossaries();
                             closeImportModal();
-                            
+
                             // Rediriger vers le nouveau glossaire
                             window.location.href = `/glossary?id=${newGlossary.id}`;
                         } else {
-                            // Fonction de parsing JSON simplifiée
-                            const parseJSON = (content) => {
-                                try {
-                                    const data = JSON.parse(content);
-                                    
-                                    // Support multiple JSON formats
-                                    if (Array.isArray(data)) {
-                                        return {
-                                            title: "Imported Glossary",
-                                            data: data.map(item => [
-                                                item.term || item.word || item.name || '',
-                                                item.definition || item.description || '',
-                                                item.synonyms || item.similar || []
-                                            ])
-                                        };
-                                    } else if (data.data && Array.isArray(data.data)) {
-                                        return {
-                                            title: data.title || data.name || "Imported Glossary",
-                                            data: data.data
-                                        };
-                                    } else {
-                                        throw new Error("Unsupported JSON format");
-                                    }
-                                } catch (e) {
-                                    throw new Error("Invalid JSON format");
-                                }
-                            };
-
+                            const { parseJSON } = await import(
+                                "../lib/export_documents.js"
+                            );
                             const parsedData = parseJSON(fileContent);
 
                             const newGlossary = {
                                 id: nextGlossaryId++,
                                 name: parsedData.title || "Imported Glossary",
-                                description: "Imported from JSON file",
+                                description:
+                                    parsedData.description ||
+                                    "Imported from JSON file",
                                 terms: parsedData.data.map((row, index) => ({
                                     id: index + 1,
                                     term: row[0],
                                     definition: row[1],
-                                    synonyms: Array.isArray(row[2]) ? row[2] : [],
+                                    synonyms: Array.isArray(row[2])
+                                        ? row[2]
+                                        : [],
                                 })),
                             };
 
@@ -824,7 +883,7 @@ import "../styles/style.css";
                             saveGlossaries();
                             renderGlossaries();
                             closeImportModal();
-                            
+
                             // Rediriger vers le nouveau glossaire
                             window.location.href = `/glossary?id=${newGlossary.id}`;
                         }
@@ -832,7 +891,8 @@ import "../styles/style.css";
                     reader.readAsText(file);
                 } catch (error) {
                     console.error("Import error:", error);
-                    importError.textContent = "Error importing file: " + error.message;
+                    importError.textContent =
+                        "Error importing file: " + error.message;
                     importError.classList.remove("hidden");
                 }
             });

@@ -110,7 +110,10 @@ import "../styles/style.css";
                 <div
                     class="modal-content bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-10 relative"
                 >
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-8" id="modalTitle">
+                    <h3
+                        class="text-2xl font-semibold text-gray-900 mb-8"
+                        id="modalTitle"
+                    >
                         Addition of a new word
                     </h3>
 
@@ -432,17 +435,17 @@ import "../styles/style.css";
 
             function attachTableEventListeners() {
                 // Écouteurs pour les boutons Edit
-                document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.getAttribute('data-id'));
+                document.querySelectorAll(".edit-btn").forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const id = parseInt(this.getAttribute("data-id"));
                         editTerm(id);
                     });
                 });
 
                 // Écouteurs pour les boutons Delete
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.getAttribute('data-id'));
+                document.querySelectorAll(".delete-btn").forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const id = parseInt(this.getAttribute("data-id"));
                         deleteTerm(id);
                     });
                 });
@@ -462,9 +465,9 @@ import "../styles/style.css";
                     .join("");
 
                 // Ajouter les écouteurs d'événements pour les boutons de suppression des synonymes
-                document.querySelectorAll('.remove-synonym').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const index = parseInt(this.getAttribute('data-index'));
+                document.querySelectorAll(".remove-synonym").forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const index = parseInt(this.getAttribute("data-index"));
                         removeSynonym(index);
                     });
                 });
@@ -472,31 +475,34 @@ import "../styles/style.css";
 
             // ===== FONCTIONS DE MODIFICATION =====
             function editTerm(id) {
-                const term = terms.find(t => t.id === id);
+                const term = terms.find((t) => t.id === id);
                 if (!term) return;
 
                 currentEditingId = id;
-                
+
                 // Remplir le modal avec les données existantes
                 document.getElementById("termInput").value = term.term;
-                document.getElementById("definitionInput").value = term.definition;
-                currentSynonyms = Array.isArray(term.synonyms) ? [...term.synonyms] : [];
-                
+                document.getElementById("definitionInput").value =
+                    term.definition;
+                currentSynonyms = Array.isArray(term.synonyms)
+                    ? [...term.synonyms]
+                    : [];
+
                 renderSynonymTags();
-                
+
                 // Changer le titre et le bouton du modal
-                modalTitle.textContent = 'Edit word';
-                submitBtn.textContent = 'Update';
-                
+                modalTitle.textContent = "Edit word";
+                submitBtn.textContent = "Update";
+
                 openModal();
             }
 
             function deleteTerm(id) {
-                if (confirm('Are you sure you want to delete this term?')) {
-                    terms = terms.filter(t => t.id !== id);
+                if (confirm("Are you sure you want to delete this term?")) {
+                    terms = terms.filter((t) => t.id !== id);
                     saveTerms();
                     renderTable();
-                    showSuccessMessage('Term deleted successfully!');
+                    showSuccessMessage("Term deleted successfully!");
                 }
             }
 
@@ -507,55 +513,41 @@ import "../styles/style.css";
 
             // ===== FONCTIONS D'EXPORT =====
             function getExportData() {
-                return terms.map((term) => [
-                    term.term,
-                    term.definition,
-                    Array.isArray(term.synonyms) ? term.synonyms : [],
-                ]);
+                return {
+                    glossary: {
+                        name: currentGlossary.name,
+                        description: currentGlossary.description,
+                        createdAt: new Date().toISOString(),
+                        termCount: terms.length,
+                    },
+                    terms: terms.map((term) => [
+                        term.term,
+                        term.definition,
+                        Array.isArray(term.synonyms) ? term.synonyms : [],
+                    ]),
+                };
             }
 
             async function updatePreview(format) {
                 try {
-                    // Fonctions d'export simplifiées
-                    const generateMarkdownString = (data, headers, title) => {
-                        let markdown = `# ${title}\n\n`;
-                        
-                        // Table header
-                        markdown += `| ${headers.join(' | ')} |\n`;
-                        markdown += `|${headers.map(() => ' --- ').join('|')}|\n`;
-                        
-                        // Table rows
-                        data.forEach(row => {
-                            const synonyms = Array.isArray(row[2]) ? row[2].join(', ') : row[2] || '';
-                            markdown += `| ${row[0]} | ${row[1]} | ${synonyms} |\n`;
-                        });
-                        
-                        return markdown;
-                    };
-
-                    const generateJSONString = (data, headers, title) => {
-                        const jsonData = {
-                            title: title,
-                            headers: headers,
-                            data: data
-                        };
-                        return JSON.stringify(jsonData, null, 2);
-                    };
-
+                    const { generateMarkdownString, generateJSONString } =
+                        await import("../lib/export_documents.js");
                     const exportData = getExportData();
                     let previewContent = "";
 
                     if (format === "markdown") {
                         previewContent = generateMarkdownString(
-                            exportData,
+                            exportData.terms,
                             ["Word", "Definition", "Synonyms"],
-                            currentGlossary.name || "Glossary"
+                            exportData.glossary.name,
+                            exportData.glossary.description,
                         );
                     } else if (format === "json") {
                         previewContent = generateJSONString(
-                            exportData,
+                            exportData.terms,
                             ["Word", "Definition", "Synonyms"],
-                            currentGlossary.name || "Glossary"
+                            exportData.glossary.name,
+                            exportData.glossary.description,
                         );
                     }
 
@@ -651,7 +643,7 @@ import "../styles/style.css";
             function closeModal() {
                 modal.classList.add("hidden");
                 document.body.style.overflow = "auto";
-                
+
                 // Réinitialiser le formulaire
                 document.getElementById("termInput").value = "";
                 document.getElementById("definitionInput").value = "";
@@ -659,13 +651,15 @@ import "../styles/style.css";
                 currentSynonyms = [];
                 aiSuggestions = [];
                 renderSynonymTags();
-                document.getElementById("aiSuggestionsContainer").classList.add("hidden");
+                document
+                    .getElementById("aiSuggestionsContainer")
+                    .classList.add("hidden");
                 clearErrors();
-                
+
                 // Réinitialiser le mode édition
                 currentEditingId = null;
-                modalTitle.textContent = 'Addition of a new word';
-                submitBtn.textContent = 'Add';
+                modalTitle.textContent = "Addition of a new word";
+                submitBtn.textContent = "Add";
             }
 
             // ===== FONCTIONS UTILITAIRES =====
@@ -895,9 +889,11 @@ import "../styles/style.css";
         `;
 
                 // Ajouter l'écouteur d'événement pour fermer le toast
-                toast.querySelector('.close-toast').addEventListener('click', function() {
-                    toast.remove();
-                });
+                toast
+                    .querySelector(".close-toast")
+                    .addEventListener("click", function () {
+                        toast.remove();
+                    });
 
                 setTimeout(() => {
                     if (toast.parentElement) {
@@ -921,37 +917,15 @@ import "../styles/style.css";
 
             exportMarkdownBtn.addEventListener("click", async () => {
                 try {
-                    // Fonction de génération de Markdown simplifiée
-                    const generateMarkdown = (data, headers, title) => {
-                        let markdown = `# ${title}\n\n`;
-                        
-                        // Table header
-                        markdown += `| ${headers.join(' | ')} |\n`;
-                        markdown += `|${headers.map(() => ' --- ').join('|')}|\n`;
-                        
-                        // Table rows
-                        data.forEach(row => {
-                            const synonyms = Array.isArray(row[2]) ? row[2].join(', ') : row[2] || '';
-                            markdown += `| ${row[0]} | ${row[1]} | ${synonyms} |\n`;
-                        });
-                        
-                        // Créer et télécharger le fichier
-                        const blob = new Blob([markdown], { type: 'text/markdown' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    };
-
+                    const { generateMarkdown } = await import(
+                        "../lib/export_documents.js"
+                    );
                     const exportData = getExportData();
                     generateMarkdown(
-                        exportData,
+                        exportData.terms,
                         ["Word", "Definition", "Synonyms"],
-                        currentGlossary.name || "Glossary"
+                        exportData.glossary.name,
+                        exportData.glossary.description,
                     );
                     closeExportModal();
                     showSuccessMessage("Glossary exported as Markdown!");
@@ -965,31 +939,15 @@ import "../styles/style.css";
 
             exportJsonBtn.addEventListener("click", async () => {
                 try {
-                    // Fonction de génération de JSON simplifiée
-                    const generateJSON = (data, headers, title) => {
-                        const jsonData = {
-                            title: title,
-                            headers: headers,
-                            data: data
-                        };
-                        
-                        const jsonString = JSON.stringify(jsonData, null, 2);
-                        const blob = new Blob([jsonString], { type: 'application/json' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.json`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    };
-
+                    const { generateJSON } = await import(
+                        "../lib/export_documents.js"
+                    );
                     const exportData = getExportData();
                     generateJSON(
-                        exportData,
+                        exportData.terms,
                         ["Word", "Definition", "Synonyms"],
-                        currentGlossary.name || "Glossary"
+                        exportData.glossary.name,
+                        exportData.glossary.description,
                     );
                     closeExportModal();
                     showSuccessMessage("Glossary exported as JSON!");
@@ -1071,18 +1029,23 @@ import "../styles/style.css";
 
                 if (currentEditingId) {
                     // Mode édition - mettre à jour le terme existant
-                    const termIndex = terms.findIndex(t => t.id === currentEditingId);
+                    const termIndex = terms.findIndex(
+                        (t) => t.id === currentEditingId,
+                    );
                     if (termIndex !== -1) {
                         terms[termIndex] = {
                             ...terms[termIndex],
                             term,
                             definition,
-                            synonyms: currentSynonyms.length > 0 ? [...currentSynonyms] : [],
+                            synonyms:
+                                currentSynonyms.length > 0
+                                    ? [...currentSynonyms]
+                                    : [],
                         };
                         saveTerms();
                         renderTable();
                         closeModal();
-                        showSuccessMessage('Term updated successfully!');
+                        showSuccessMessage("Term updated successfully!");
                     }
                 } else {
                     // Mode ajout - créer un nouveau terme
@@ -1090,12 +1053,15 @@ import "../styles/style.css";
                         id: nextId++,
                         term,
                         definition,
-                        synonyms: currentSynonyms.length > 0 ? [...currentSynonyms] : [],
+                        synonyms:
+                            currentSynonyms.length > 0
+                                ? [...currentSynonyms]
+                                : [],
                     });
                     saveTerms();
                     renderTable();
                     closeModal();
-                    showSuccessMessage('Term added successfully!');
+                    showSuccessMessage("Term added successfully!");
                 }
             });
 

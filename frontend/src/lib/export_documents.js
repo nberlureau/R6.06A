@@ -1,9 +1,19 @@
-function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary") {
+function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
   if (!Array.isArray(data) || data.some(row => !Array.isArray(row) || row.length !== headers.length)) {
     throw new Error(`Invalid data format`);
   }
 
-  const titleLine = `# ${title}\n\n`;
+  let markdown = `# ${title}\n\n`;
+
+  // Ajouter la description si elle existe
+  if (description) {
+    markdown += `**Description:** ${description}\n\n`;
+  }
+
+  // Ajouter les métadonnées
+  markdown += `**Export Date:** ${new Date().toLocaleDateString()}\n`;
+  markdown += `**Number of Terms:** ${data.length}\n\n`;
+
   const headerRow = `| ${headers.join(" | ")} |`;
   const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`;
 
@@ -17,7 +27,7 @@ function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], ti
     return `| ${formattedRow.join(" | ")} |`;
   }).join("\n");
 
-  const markdownTable = titleLine + headerRow + "\n" + separatorRow + "\n" + dataRows;
+  const markdownTable = markdown + headerRow + "\n" + separatorRow + "\n" + dataRows;
 
   const blob = new Blob([markdownTable], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -37,6 +47,13 @@ function parseMarkdown(markdownContent) {
   const titleLine = lines.find(line => line.startsWith('#'));
   if (!titleLine) throw new Error("Title not found");
   const title = titleLine.replace(/^#\s*/, '');
+
+  // Extraction de la description
+  let description = "";
+  const descriptionLine = lines.find(line => line.startsWith('**Description:**'));
+  if (descriptionLine) {
+    description = descriptionLine.replace('**Description:**', '').trim();
+  }
 
   // Recherche du tableau
   const tableStart = lines.findIndex(line => line.trim().startsWith('|'));
@@ -65,14 +82,20 @@ function parseMarkdown(markdownContent) {
 
   return {
     title: title,
+    description: description,
     headers: headers,
     data: data
   };
 }
 
-function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary") {
+function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
   const structuredData = {
-    title: title,
+    glossary: {
+      name: title,
+      description: description,
+      exportDate: new Date().toISOString(),
+      termCount: data.length
+    },
     headers: headers,
     data: data
   };
@@ -92,27 +115,48 @@ function parseJSON(jsonContent) {
   try {
     const parsedData = JSON.parse(jsonContent);
 
-    if (!parsedData.title || !parsedData.headers || !parsedData.data) {
+    // Support des anciens et nouveaux formats
+    if (parsedData.glossary) {
+      // Nouveau format avec métadonnées
+      return {
+        title: parsedData.glossary.name || parsedData.title || "Imported Glossary",
+        description: parsedData.glossary.description || "",
+        headers: parsedData.headers,
+        data: parsedData.data
+      };
+    } else if (parsedData.title && parsedData.data) {
+      // Ancien format
+      return {
+        title: parsedData.title,
+        description: "",
+        headers: parsedData.headers,
+        data: parsedData.data
+      };
+    } else {
       throw new Error("Invalid JSON structure");
     }
-
-    return {
-      title: parsedData.title,
-      headers: parsedData.headers,
-      data: parsedData.data
-    };
   } catch (e) {
     throw new Error("JSON parsing error: " + e.message);
   }
 }
 
 // Fonctions pour la prévisualisation (retournent le contenu sans télécharger)
-function generateMarkdownString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary") {
+function generateMarkdownString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
   if (!Array.isArray(data) || data.some(row => !Array.isArray(row) || row.length !== headers.length)) {
     throw new Error(`Invalid data format`);
   }
 
-  const titleLine = `# ${title}\n\n`;
+  let markdown = `# ${title}\n\n`;
+
+  // Ajouter la description si elle existe
+  if (description) {
+    markdown += `**Description:** ${description}\n\n`;
+  }
+
+  // Ajouter les métadonnées
+  markdown += `**Export Date:** ${new Date().toLocaleDateString()}\n`;
+  markdown += `**Number of Terms:** ${data.length}\n\n`;
+
   const headerRow = `| ${headers.join(" | ")} |`;
   const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`;
 
@@ -126,12 +170,17 @@ function generateMarkdownString(data, headers = ["Word", "Definition", "Synonyms
     return `| ${formattedRow.join(" | ")} |`;
   }).join("\n");
 
-  return titleLine + headerRow + "\n" + separatorRow + "\n" + dataRows;
+  return markdown + headerRow + "\n" + separatorRow + "\n" + dataRows;
 }
 
-function generateJSONString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary") {
+function generateJSONString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
   const structuredData = {
-    title: title,
+    glossary: {
+      name: title,
+      description: description,
+      exportDate: new Date().toISOString(),
+      termCount: data.length
+    },
     headers: headers,
     data: data
   };
