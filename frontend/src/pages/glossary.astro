@@ -53,8 +53,10 @@ import "../styles/style.css";
         <main class="px-8 py-8">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-semibold text-gray-900">
-                        Glossary
+                    <h2
+                        class="text-3xl font-semibold text-gray-900"
+                        id="glossaryTitle"
+                    >
                     </h2>
                     <button
                         id="addTermBtn"
@@ -1072,6 +1074,9 @@ import "../styles/style.css";
             });
 
             // ===== INITIALISATION =====
+            document.getElementById("glossaryTitle").textContent =
+                currentGlossary.name;
+            document.title = `GlossAI - ${currentGlossary.name}`;
             renderTable();
         </script>
     </body>
