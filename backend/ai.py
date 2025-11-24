@@ -50,6 +50,7 @@ Respond ONLY with the synonyms, separated by commas. Do not include any other te
             term.strip().lower()
             for term in response.split(",")
             if term.strip().lower() not in [word, *synonyms]
+            and term.strip().lower().removesuffix("s") not in [word, *synonyms]
         },
     )
 
@@ -57,9 +58,12 @@ Respond ONLY with the synonyms, separated by commas. Do not include any other te
 async def main() -> None:
     print(
         await get_synonyms(
-            "gameboard",
-            "Grid composed of squares for placing letter tokens",
-            ["grid", "board"],
+            "Chess",
+            "The game of chess",
+            "piece",
+            "A piece",
+            [],
+            ["board"],
         ),
     )
 
