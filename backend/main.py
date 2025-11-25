@@ -1,4 +1,5 @@
 import os
+import signal
 
 import uvicorn
 from ai import get_synonyms
@@ -42,6 +43,11 @@ async def suggest_synonyms(request: SynonymRequest):
             status_code=500,
             detail=f"Erreur lors de la génération des suggestions: {e!s}",
         )
+
+
+@app.post("/shutdown")
+async def shutdown():
+    os.kill(os.getpid(), signal.SIGTERM)
 
 
 if __name__ == "__main__":

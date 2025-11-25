@@ -130,7 +130,12 @@ fn main() {
                             .arg(child.pid().to_string())
                             .status();
                     } else {
-                        let _ = child.kill();
+                        let client = reqwest::blocking::Client::new();
+                        let url = format!("http://127.0.0.1:{}/shutdown", BACKEND_PORT);
+
+                        if let Err(e) = client.post(&url).send() {
+                            println!("Error while closing backend: {}", e);
+                        }
                     }
                 };
             }
