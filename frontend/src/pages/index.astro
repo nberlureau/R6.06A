@@ -334,7 +334,12 @@ import "../styles/style.css";
                                 accept=".md,.json"
                                 class="hidden"
                             />
-                            <div class="flex flex-col items-center gap-3">
+
+                            <!-- Contenu par défaut -->
+                            <div
+                                id="dropZoneContent"
+                                class="flex flex-col items-center gap-3"
+                            >
                                 <svg
                                     class="w-12 h-12 text-gray-400"
                                     fill="none"
@@ -353,6 +358,29 @@ import "../styles/style.css";
                                 </p>
                                 <p class="text-sm text-gray-500">
                                     Supports: .md, .json
+                                </p>
+                            </div>
+                            <div
+                                id="filePreview"
+                                class="hidden flex flex-col items-center gap-3"
+                            >
+                                <svg
+                                    class="w-12 h-12 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    ></path>
+                                </svg>
+                                <p
+                                    id="fileNameText"
+                                    class="text-gray-600 text-center"
+                                >
                                 </p>
                             </div>
                         </div>
@@ -623,12 +651,25 @@ import "../styles/style.css";
                 document.body.style.overflow = "hidden";
                 importError.classList.add("hidden");
                 importFileInput.value = "";
+
+                // S'assurer que l'affichage est réinitialisé à l'ouverture
+                document
+                    .getElementById("dropZoneContent")
+                    .classList.remove("hidden");
+                document.getElementById("filePreview").classList.add("hidden");
             }
 
             function closeImportModal() {
                 importModal.classList.add("hidden");
                 document.body.style.overflow = "auto";
                 importError.classList.add("hidden");
+                importFileInput.value = "";
+
+                // Réinitialiser l'affichage du fichier
+                document
+                    .getElementById("dropZoneContent")
+                    .classList.remove("hidden");
+                document.getElementById("filePreview").classList.add("hidden");
             }
 
             // ===== ÉVÉNEMENTS =====
@@ -666,6 +707,21 @@ import "../styles/style.css";
             importDropZone.addEventListener("click", () =>
                 importFileInput.click(),
             );
+
+            importFileInput.addEventListener("change", function () {
+                const file = this.files[0];
+                if (file) {
+                    document.getElementById("fileNameText").textContent =
+                        file.name;
+
+                    document
+                        .getElementById("dropZoneContent")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("filePreview")
+                        .classList.remove("hidden");
+                }
+            });
 
             // Clear errors on input
             document
