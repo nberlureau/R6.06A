@@ -7,7 +7,7 @@ function parseCodeFile(fileContent, language) {
   };
 
   let cleanedContent = fileContent;
-  
+
   switch (language.toLowerCase()) {
     case 'java':
     case 'javascript':
@@ -41,7 +41,7 @@ function parseCodeFile(fileContent, language) {
     },
     php: {
       class: /(?:abstract|final)?\s*class\s+(\w+)/g,
-      
+
       function: /(?:public|private|protected)?\s*(?:static)?\s*function\s+(\w+)\s*\(/g
     },
     javascript: {
@@ -67,7 +67,7 @@ function parseCodeFile(fileContent, language) {
   };
 
   const lang = language.toLowerCase();
-  
+
   if (!patterns[lang]) {
     throw new Error(`mauvais langage`);
 
@@ -83,10 +83,10 @@ function parseCodeFile(fileContent, language) {
     }
   }
 
- 
+
   patterns[lang].function.lastIndex = 0;
   while ((match = patterns[lang].function.exec(cleanedContent)) !== null) {
-   
+
     const functionName = match[1] || match[2] || match[3] || match[4];
     if (functionName && !result.functions.includes(functionName)) {
 
