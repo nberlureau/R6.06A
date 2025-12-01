@@ -826,22 +826,17 @@ import "../styles/style.css";
                 }
             }
 
+            const { invoke } = window.__TAURI__.core;
             async function fetchAISuggestions() {
                 const termInput = document.getElementById("termInput");
-                const definitionInput =
-                    document.getElementById("definitionInput");
+                const definitionInput = document.getElementById("definitionInput");
                 const synonymInput = document.getElementById("synonymInput");
                 const suggestBtn = document.getElementById("suggestBtn");
-                const aiSuggestionsContainer = document.getElementById(
-                    "aiSuggestionsContainer",
-                );
+                const aiSuggestionsContainer = document.getElementById("aiSuggestionsContainer");
 
                 const term = termInput.value.trim();
-                const definition = definitionInput.value.trim();
-                const synonyms = [
-                    ...currentSynonyms,
-                    synonymInput.value.trim(),
-                ];
+                const definition = definitionInput.value.trim() || null;
+                const synonyms = [...currentSynonyms, synonymInput.value.trim()].filter(s => s);
 
                 if (!term) {
                     showErrorMessage("Please enter a word first.");
@@ -849,46 +844,37 @@ import "../styles/style.css";
                     return;
                 }
 
+                // Get glossary name and description from currentGlossary
+                const glossaryName = currentGlossary ? currentGlossary.name : "";
+                const glossaryDescription = currentGlossary ? currentGlossary.description : "";
+
+                // Get all terms from the glossary for context (just the words)
+                const contextTerms = terms.map(t => t.term);
+
                 const originalText = suggestBtn.textContent;
                 suggestBtn.textContent = "Searching...";
                 suggestBtn.disabled = true;
                 aiSuggestionsContainer.classList.add("hidden");
 
                 try {
-                    const response = await fetch("/api/suggest", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            term: term,
-                            definition: definition,
-                            synonyms: synonyms,
-                        }),
+                    aiSuggestions = await invoke("suggest_synonyms", {
+                        term,
+                        definition,
+                        synonyms,
+                        glossaryName,
+                        glossaryDescription,
+                        context: contextTerms
                     });
 
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(
-                            errorData.detail || "Erreur lors de la requête",
-                        );
-                    }
-
-                    const data = await response.json();
-
-                    if (data.synonyms && data.synonyms.length > 0) {
-                        aiSuggestions = data.synonyms;
+                    if (aiSuggestions.length > 0) {
                         renderAISuggestions();
-                        showSuccessMessage(
-                            `${data.synonyms.length} suggestions found`,
-                        );
+                        showSuccessMessage(`${aiSuggestions.length} suggestions found`);
                     } else {
-                        aiSuggestions = [];
                         showInfoMessage("No synonyms found for this word");
                     }
                 } catch (error) {
                     console.error("Error:", error);
-                    showErrorMessage("Error: " + error.message);
+                    showErrorMessage("Error: " + (error?.message || error?.toString() || "Failed to find suggestions"));
                     aiSuggestions = [];
                 } finally {
                     suggestBtn.textContent = originalText;
