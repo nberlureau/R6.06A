@@ -93,7 +93,8 @@ import "../styles/style.css";
                         </thead>
                         <tbody
                             id="glossaryTable"
-                            class="divide-y divide-gray-200" style="width:75%"
+                            class="divide-y divide-gray-200"
+                            style="width:75%"
                         >
                         </tbody>
                     </table>
@@ -407,7 +408,10 @@ import "../styles/style.css";
                 const tbody = document.getElementById("glossaryTable");
 
                 // Fonction utilitaire pour couper un texte
-                const shorten = (t) => (typeof t === "string" && t.length > 20 ? t.slice(0, 20) + "..." : t);
+                const shorten = (t) =>
+                    typeof t === "string" && t.length > 20
+                        ? t.slice(0, 20) + "..."
+                        : t;
 
                 tbody.innerHTML = terms
                     .map(
@@ -441,14 +445,13 @@ import "../styles/style.css";
                                     </button>
                                 </td>
                             </tr>
-                        `
+                        `,
                     )
                     .join("");
 
                 // Ajouter les écouteurs d'événements pour les boutons Edit et Delete
                 attachTableEventListeners();
             }
-
 
             function attachTableEventListeners() {
                 // Écouteurs pour les boutons Edit

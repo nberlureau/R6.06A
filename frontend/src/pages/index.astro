@@ -424,11 +424,14 @@ import "../styles/style.css";
             }
 
             function renderGlossaries() {
-                const container = document.getElementById("glossariesContainer");
+                const container = document.getElementById(
+                    "glossariesContainer",
+                );
                 const emptyState = document.getElementById("emptyState");
 
                 // Fonction utilitaire pour couper un texte
-                const shorten = (t) => (t.length > 20 ? t.slice(0, 20) + "..." : t);
+                const shorten = (t) =>
+                    t.length > 20 ? t.slice(0, 20) + "..." : t;
 
                 if (glossaries.length === 0) {
                     container.innerHTML = "";
@@ -482,11 +485,10 @@ import "../styles/style.css";
                                     </div>
                                 </div>
                             </div>
-                        `
+                        `,
                     )
                     .join("");
             }
-
 
             // ===== FONCTIONS POUR LES GLOSSAIRES =====
             window.redirectToGlossary = function (id) {
