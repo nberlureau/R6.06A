@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyseur de Code</title>
+</head>
+<body>
+    <h1>Analyseur de Code</h1>
+    
+    <div>
+        <label for="language">Langage:</label>
+        <select id="language">
+            <option value="java">Java</option>
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="kotlin">Kotlin</option>
+            <option value="csharp">C#</option>
+            <option value="python">Python</option>
+            <option value="php">PHP</option>
+        </select>
+    </div>
+    
+    <div>
+        <label for="code">Code:</label><br>
+        <textarea id="code" rows="15" cols="80"></textarea>
+    </div>
+    
+    <button onclick="analyzeCode()">Analyser</button>
+    
+    <div id="results"></div>
+
+    <script>
+        function parseCodeFile(fileContent, language) {
+            const result = {
+                classes: [],
+                functions: []
+            };
+            let cleanedContent = fileContent;
+            
+            switch (language.toLowerCase()) {
+                case 'java':
+                case 'javascript':
+                case 'typescript':
+                case 'kotlin':
+                case 'csharp':
+                    cleanedContent = cleanedContent
+                        .replace(/\/\*[\s\S]*?\*\//g, '')
+                        .replace(/\/\/.*/g, '');
+                    break;
+                case 'python':
+                    cleanedContent = cleanedContent
+                        .replace(/"""[\s\S]*?"""/g, '')
+                        .replace(/'''[\s\S]*?'''/g, '')
+                        .replace(/#.*/g, '');
+                    break;
+                case 'php':
+                    cleanedContent = cleanedContent
+                        .replace(/\/\*[\s\S]*?\*\//g, '')
+                        .replace(/\/\/.*/g, '')
+                        .replace(/#.*/g, '');
+                    break;
+            }
+            
+            const patterns = {
+                java: {
+                    class: /(?:public|private|protected)?\s*(?:static|final|abstract)?\s*(?:class|interface|enum)\s+(\w+)/g,
+                    function: /(?:public|private|protected)?\s*(?:static|final|abstract|synchronized)?\s*(?:<[^>]+>\s*)?(?:\w+(?:<[^>]+>)?)\s+(\w+)\s*\([^)]*\)\s*(?:throws\s+[\w\s,]+)?\s*\{/g
+                },
+                php: {
+                    class: /(?:abstract|final)?\s*class\s+(\w+)/g,
+                    function: /(?:public|private|protected)?\s*(?:static)?\s*function\s+(\w+)\s*\(/g
+                },
+                javascript: {
+                    class: /class\s+(\w+)/g,
+                    function: /(?:async\s+)?(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s*)?\(?[^)]*\)?\s*=>|(\w+)\s*:\s*(?:async\s*)?function)/g
+                },
+                typescript: {
+                    class: /(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/g,
+                    function: /(?:export\s+)?(?:async\s+)?(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s*)?\(?[^)]*\)?\s*=>|(\w+)\s*:\s*(?:async\s*)?function|(?:public|private|protected)?\s*(?:static)?\s*(?:async)?\s*(\w+)\s*\([^)]*\)\s*:\s*[^{]+\{)/g
+                },
+                kotlin: {
+                    class: /(?:data\s+|sealed\s+|open\s+|abstract\s+)?class\s+(\w+)/g,
+                    function: /fun\s+(?:<[^>]+>\s*)?(\w+)\s*\(/g
+                },
+                python: {
+                    class: /class\s+(\w+)/g,
+                    function: /def\s+(\w+)\s*\(/g
+                },
+                csharp: {
+                    class: /(?:public|private|protected|internal)?\s*(?:static|sealed|abstract|partial)?\s*(?:class|interface|struct)\s+(\w+)/g,
+                    function: /(?:public|private|protected|internal)?\s*(?:static|virtual|override|abstract|async)?\s*(?:\w+(?:<[^>]+>)?)\s+(\w+)\s*\([^)]*\)\s*\{/g
+                }
+            };
+            
+            const lang = language.toLowerCase();
+            
+            if (!patterns[lang]) {
+                throw new Error('Mauvais langage');
+            }
+            
+            let match;
+            while ((match = patterns[lang].class.exec(cleanedContent)) !== null) {
+                const className = match[1];
+                if (className && !result.classes.includes(className)) {
+                    result.classes.push(className);
+                }
+            }
+            
+            patterns[lang].function.lastIndex = 0;
+            while ((match = patterns[lang].function.exec(cleanedContent)) !== null) {
+                const functionName = match[1] || match[2] || match[3] || match[4];
+                if (functionName && !result.functions.includes(functionName)) {
+                    result.functions.push(functionName);
+                }
+            }
+            
+            return result;
+        }
+
+        function analyzeCode() {
+            const code = document.getElementById('code').value;
+            const language = document.getElementById('language').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!code.trim()) {
+                resultsDiv.innerHTML = '<p>Veuillez entrer du code.</p>';
+                return;
+            }
+            
+            try {
+                const result = parseCodeFile(code, language);
+                
+                let html = '<h2>Résultats:</h2>';
+                
+                html += '<h3>Classes (' + result.classes.length + '):</h3>';
+                if (result.classes.length > 0) {
+                    html += '<ul>';
+                    result.classes.forEach(c => {
+                        html += '<li>' + c + '</li>';
+                    });
+                    html += '</ul>';
+                } else {
+                    html += '<p>Aucune classe trouvée</p>';
+                }
+                
+                html += '<h3>Fonctions (' + result.functions.length + '):</h3>';
+                if (result.functions.length > 0) {
+                    html += '<ul>';
+                    result.functions.forEach(f => {
+                        html += '<li>' + f + '</li>';
+                    });
+                    html += '</ul>';
+                } else {
+                    html += '<p>Aucune fonction trouvée</p>';
+                }
+                
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Erreur: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
