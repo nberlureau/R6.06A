@@ -417,6 +417,7 @@ import "../styles/style.css";
             let nextGlossaryId =
                 Math.max(...glossaries.map((g) => g.id), 0) + 1;
             let currentEditGlossaryId = null;
+            let deleteUtils = null;
 
             // ===== FONCTIONS DE BASE =====
             function saveGlossaries() {
@@ -530,12 +531,13 @@ import "../styles/style.css";
                 openEditGlossaryModal();
             };
 
-            window.deleteGlossary = function (id) {
-                if (confirm("Are you sure you want to delete this glossary?")) {
-                    glossaries = glossaries.filter((g) => g.id !== id);
+            window.deleteGlossary = async function (id) {
+                const utils = await loadDeleteUtils();
+                await utils.deleteGlossary(id, (updatedGlossaries) => {
+                    glossaries = updatedGlossaries;
                     saveGlossaries();
                     renderGlossaries();
-                }
+                });
             };
 
             // ===== GESTION DES MODALES =====
@@ -674,6 +676,16 @@ import "../styles/style.css";
                     .getElementById("dropZoneContent")
                     .classList.remove("hidden");
                 document.getElementById("filePreview").classList.add("hidden");
+            }
+
+            async function loadDeleteUtils() {
+                if (!deleteUtils) {
+                    const { DeleteUtils } = await import(
+                        "../lib/deleteUtils.js"
+                    );
+                    deleteUtils = new DeleteUtils();
+                }
+                return deleteUtils;
             }
 
             // ===== ÉVÉNEMENTS =====
