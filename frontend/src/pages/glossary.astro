@@ -171,7 +171,54 @@ import "../styles/style.css";
                                 class="block text-sm font-medium text-gray-900 mb-2"
                             >
                                 Synonym
+                                <!-- Point d'interrogation avec tooltip -->
+                                <span class="inline-block relative group ml-1">
+                                    <svg
+                                        class="w-4 h-4 text-gray-900 cursor-help"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="1 0 24 19"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        >
+                                        </path>
+                                    </svg>
+                                    <!-- Tooltip qui apparaît au hover -->
+                                    <div
+                                        class="hidden group-hover:block absolute z-10 w-64 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-lg
+                        -top-2 left-6 transform -translate-y-full"
+                                    >
+                                        <div class="relative">
+                                            <div
+                                                class="absolute -left-2 top-1/2 transform -translate-y-1/2"
+                                            >
+                                                <div
+                                                    class="w-2 h-2 bg-gray-900 rotate-45"
+                                                >
+                                                </div>
+                                            </div>
+                                            <p class="font-medium mb-1">
+                                                About Synonyms
+                                            </p>
+                                            <p
+                                                id="synonymTooltipText"
+                                                class="text-gray-300"
+                                            >
+                                                To add Synonyms, type the word
+                                                in the input field and press
+                                                Enter. For the AI suggestions,
+                                                just click on the suggested
+                                                synonym you want to add it.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </span>
                             </label>
+
                             <div class="flex items-center gap-2 flex-wrap">
                                 <input
                                     type="text"
