@@ -212,7 +212,7 @@ import "../styles/style.css";
                                                 in the input field and press
                                                 Enter. For the AI suggestions,
                                                 just click on the suggested
-                                                synonym you want to add it.
+                                                synonyms you want to add.
                                             </p>
                                         </div>
                                     </div>
@@ -829,14 +829,20 @@ import "../styles/style.css";
             const { invoke } = window.__TAURI__.core;
             async function fetchAISuggestions() {
                 const termInput = document.getElementById("termInput");
-                const definitionInput = document.getElementById("definitionInput");
+                const definitionInput =
+                    document.getElementById("definitionInput");
                 const synonymInput = document.getElementById("synonymInput");
                 const suggestBtn = document.getElementById("suggestBtn");
-                const aiSuggestionsContainer = document.getElementById("aiSuggestionsContainer");
+                const aiSuggestionsContainer = document.getElementById(
+                    "aiSuggestionsContainer",
+                );
 
                 const term = termInput.value.trim();
                 const definition = definitionInput.value.trim() || null;
-                const synonyms = [...currentSynonyms, synonymInput.value.trim()].filter(s => s);
+                const synonyms = [
+                    ...currentSynonyms,
+                    synonymInput.value.trim(),
+                ].filter((s) => s);
 
                 if (!term) {
                     showErrorMessage("Please enter a word first.");
@@ -845,11 +851,15 @@ import "../styles/style.css";
                 }
 
                 // Get glossary name and description from currentGlossary
-                const glossaryName = currentGlossary ? currentGlossary.name : "";
-                const glossaryDescription = currentGlossary ? currentGlossary.description : "";
+                const glossaryName = currentGlossary
+                    ? currentGlossary.name
+                    : "";
+                const glossaryDescription = currentGlossary
+                    ? currentGlossary.description
+                    : "";
 
                 // Get all terms from the glossary for context (just the words)
-                const contextTerms = terms.map(t => t.term);
+                const contextTerms = terms.map((t) => t.term);
 
                 const originalText = suggestBtn.textContent;
                 suggestBtn.textContent = "Searching...";
@@ -863,18 +873,25 @@ import "../styles/style.css";
                         synonyms,
                         glossaryName,
                         glossaryDescription,
-                        context: contextTerms
+                        context: contextTerms,
                     });
 
                     if (aiSuggestions.length > 0) {
                         renderAISuggestions();
-                        showSuccessMessage(`${aiSuggestions.length} suggestions found`);
+                        showSuccessMessage(
+                            `${aiSuggestions.length} suggestions found`,
+                        );
                     } else {
                         showInfoMessage("No synonyms found for this word");
                     }
                 } catch (error) {
                     console.error("Error:", error);
-                    showErrorMessage("Error: " + (error?.message || error?.toString() || "Failed to find suggestions"));
+                    showErrorMessage(
+                        "Error: " +
+                            (error?.message ||
+                                error?.toString() ||
+                                "Failed to find suggestions"),
+                    );
                     aiSuggestions = [];
                 } finally {
                     suggestBtn.textContent = originalText;
