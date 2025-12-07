@@ -1,52 +1,50 @@
 # GlossAI
+
 Une application en Python **FastAPI** permettant d'implémenter les fonctionnalités intelligentes du LLM.
 
 ---
 
-##  Pour lancer l'application
+## Installation
 
-###  Prérequis
-- Python 3.9+ installé
-- pip installé
-- venv installé
-- Node.js 18.17.1+ installé
-- Avoir rust et tauri-cli d'installé (et fonctionnels)
-- Avoir ses polices d'execution qui autorisent l'execution des scripts
----
+Télécharger la [dernière version](https://github.com/embeddings-but3-2025-AIpagnan/GlossAI/releases/latest).
 
-### Installation
+**Linux**: double-cliquez sur le fichier téléchargé pour lancer l'application.
+**Windows**: lancez le fichier téléchargé puis suivez les instructions pour installer l'application.
 
-#### Linux
+## Développement
+
+### Prérequis
+- [Python 3.9+](https://www.python.org/downloads/), ainsi que pip et venv
+- [Node.js 18.17.1+](https://nodejs.org/en/download)
+- [Rust](https://rust-lang.org/tools/install/)
+- Tauri-cli:
+  - [Prérequis](https://v2.tauri.app/start/prerequisites/)
+  - Puis lancer `cargo install tauri-cli --version "^2.0.0" --locked`
+- [Ollama](https://ollama.com/download)
+
+Sur Windows (il faut nécéssairement utiliser Powershell):
+- Autoriser l'exécution des scripts avec la commande `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`
+
+### Linux
 ```bash
 git clone https://github.com/embeddings-but3-2025-AIpagnan/GlossAI.git
 cd GlossAI
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r backend/requirements.txt
 npm install
+pip install -r backend/requirements.txt
+npm run dev
 ```
-#### Windows
+
+### Windows
 ```bash
 git clone https://github.com/embeddings-but3-2025-AIpagnan/GlossAI.git
 cd GlossAI
 python3 -m venv .venv
 .venv/Scripts/Activate.ps1
-pip install -r backend/requirements.txt
 npm install
+pip install -r backend/requirements.txt
+npm run dev
 ```
----
 
-### Lancement 
-
-#### Développement
-```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-#### Production
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000
-```
----
-
-L'application sera accessible à l'adresse : 
-http://<adresse_du_serveur>:8000
+Vous devrez aussi lancer manuellement un serveur Ollama grâce à la commande `ollama serve`
