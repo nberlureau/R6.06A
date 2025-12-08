@@ -916,9 +916,15 @@ import "../styles/style.css";
                                     id: index + 1,
                                     term: row[0],
                                     definition: row[1],
-                                    synonyms: Array.isArray(row[2])
-                                        ? row[2]
-                                        : [],
+                                    synonyms:
+                                        typeof row[2] === "string"
+                                            ? row[2]
+                                                  .split(",")
+                                                  .map((s) => s.trim())
+                                                  .filter((s) => s)
+                                            : Array.isArray(row[2])
+                                              ? row[2]
+                                              : [],
                                 })),
                             };
 
