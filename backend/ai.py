@@ -32,7 +32,7 @@ Find synonyms of the word "{word}"{f" as defined by:\n> {"\n > ".join(definition
 
 {f"Already known synonyms for the correct sense of the word: {", ".join(synonyms)}" if synonyms else ""}
 
-Your response must be in the original word's language.
+Your response MUST be in the original word's language.
 Respond ONLY with the synonyms, separated by commas. Do not include any other text in your response.
 """
 
@@ -60,8 +60,8 @@ async def main() -> None:
         await get_synonyms(
             "Chess",
             "The game of chess",
-            "piece",
-            "A piece",
+            "pawn",
+            "A pawn",
             [],
             ["board"],
         ),
