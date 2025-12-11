@@ -4,7 +4,7 @@ Une application en Python **FastAPI** permettant d'implémenter les fonctionnali
 
 ## Installation
 
-Télécharger la [dernière version](https://github.com/embeddings-but3-2025-AIpagnan/GlossAI/releases/latest).
+Téléchargez la [dernière version](https://github.com/embeddings-but3-2025-AIpagnan/GlossAI/releases/latest).
 
 **Linux**: double-cliquez sur le fichier téléchargé pour lancer l'application.  
 **Windows**: lancez le fichier téléchargé puis suivez les instructions pour installer l'application.
