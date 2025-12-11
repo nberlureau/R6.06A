@@ -2,13 +2,11 @@
 
 Une application en Python **FastAPI** permettant d'implémenter les fonctionnalités intelligentes du LLM.
 
----
-
 ## Installation
 
 Télécharger la [dernière version](https://github.com/embeddings-but3-2025-AIpagnan/GlossAI/releases/latest).
 
-**Linux**: double-cliquez sur le fichier téléchargé pour lancer l'application.
+**Linux**: double-cliquez sur le fichier téléchargé pour lancer l'application.  
 **Windows**: lancez le fichier téléchargé puis suivez les instructions pour installer l'application.
 
 ## Développement
@@ -46,5 +44,3 @@ npm install
 pip install -r backend/requirements.txt
 npm run dev
 ```
-
-Vous devrez aussi lancer manuellement un serveur Ollama grâce à la commande `ollama serve`
