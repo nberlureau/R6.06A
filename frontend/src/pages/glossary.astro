@@ -667,7 +667,7 @@ import "../styles/style.css";
             async function updatePreview(format) {
                 try {
                     const { generateMarkdownString, generateJSONString } =
-                        await import("../lib/export_documents.js");
+                        await import("../lib/exportDocuments.js");
                     const exportData = getExportData();
                     let previewContent = "";
 
@@ -1180,7 +1180,7 @@ import "../styles/style.css";
             exportMarkdownBtn.addEventListener("click", async () => {
                 try {
                     const { generateMarkdown } =
-                        await import("../lib/export_documents.js");
+                        await import("../lib/exportDocuments.js");
                     const exportData = getExportData();
                     generateMarkdown(
                         exportData.terms,
@@ -1201,7 +1201,7 @@ import "../styles/style.css";
             exportJsonBtn.addEventListener("click", async () => {
                 try {
                     const { generateJSON } =
-                        await import("../lib/export_documents.js");
+                        await import("../lib/exportDocuments.js");
                     const exportData = getExportData();
                     generateJSON(
                         exportData.terms,
