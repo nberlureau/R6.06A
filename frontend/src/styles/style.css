@@ -159,3 +159,26 @@ textarea:focus-visible {
 #exportPreview::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
+
+#definitionTooltip {
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 9999;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+/* Indicateur visuel pour les définitions coupées */
+.definition-cell {
+    position: relative;
+    display: inline-block;
+}
+
+/* Petit effet visuel au survol */
+.definition-cell:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+    border-radius: 4px;
+}

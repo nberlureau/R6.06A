@@ -95,6 +95,11 @@ import "../styles/style.css";
                             id="glossaryTable"
                             class="divide-y divide-gray-200"
                         >
+                            <div
+                                id="definitionTooltip"
+                                class="fixed z-50 hidden bg-gray-900 text-white text-sm rounded-lg shadow-lg p-3 max-w-md pointer-events-none"
+                            >
+                            </div>
                         </tbody>
                     </table>
                 </div>
@@ -463,41 +468,102 @@ import "../styles/style.css";
                 tbody.innerHTML = terms
                     .map(
                         (term) => `
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 font-medium text-gray-900">
-                                    ${shorten(term.term)}
-                                </td>
-                                <td class="px-6 py-4 text-gray-700">
-                                    ${shorten(term.definition)}
-                                </td>
-                                <td class="px-6 py-4 text-gray-700">
-                                    ${Array.isArray(term.synonyms) ? term.synonyms.join(", ") : term.synonyms}
-                                </td>
-                                <td class="px-6 py-4">
-                                    <button 
-                                        class="edit-btn text-blue-600 hover:text-blue-900 font-medium text-sm mr-4"
-                                        data-id="${term.id}"
-                                    >
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
-                                    <button 
-                                        class="delete-btn text-red-600 hover:text-red-900 font-medium text-sm"
-                                        data-id="${term.id}"
-                                    >
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </button>
-                                </td>
-                            </tr>
-                        `,
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 font-medium text-gray-900">
+                        ${shorten(term.term)}
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">
+                        <div 
+                            class="definition-cell cursor-help relative group"
+                            data-definition="${term.definition.replace(/"/g, "&quot;")}"
+                        >
+                            ${shorten(term.definition)}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">
+                        ${Array.isArray(term.synonyms) ? term.synonyms.join(", ") : term.synonyms}
+                    </td>
+                    <td class="px-6 py-4">
+                        <button 
+                            class="edit-btn text-blue-600 hover:text-blue-900 font-medium text-sm mr-4"
+                            data-id="${term.id}"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button 
+                            class="delete-btn text-red-600 hover:text-red-900 font-medium text-sm"
+                            data-id="${term.id}"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `,
                     )
                     .join("");
 
                 // Ajouter les écouteurs d'événements pour les boutons Edit et Delete
                 attachTableEventListeners();
+
+                // Ajouter les écouteurs d'événements pour les tooltips de définition
+                attachDefinitionTooltips();
+            }
+
+            function attachDefinitionTooltips() {
+                const definitionCells =
+                    document.querySelectorAll(".definition-cell");
+                const tooltip = document.getElementById("definitionTooltip");
+
+                definitionCells.forEach((cell) => {
+                    const definition = cell.getAttribute("data-definition");
+
+                    // Ne montrer le tooltip que si la définition est coupée
+                    if (definition && definition.length > 20) {
+                        cell.addEventListener("mouseenter", (e) => {
+                            const rect = cell.getBoundingClientRect();
+
+                            // Positionner le tooltip au-dessus de la cellule
+                            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                            tooltip.style.top = `${rect.top - 10}px`;
+                            tooltip.style.transform =
+                                "translateX(-50%) translateY(-100%)";
+
+                            // Définir le contenu
+                            tooltip.innerHTML = `
+                    <div class="relative">
+                        <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
+                            <div class="w-2 h-2 bg-gray-900 rotate-45"></div>
+                        </div>
+                        <div class="break-words whitespace-normal">${definition}</div>
+                    </div>
+                `;
+
+                            // Afficher le tooltip
+                            tooltip.classList.remove("hidden");
+                        });
+
+                        cell.addEventListener("mouseleave", () => {
+                            tooltip.classList.add("hidden");
+                        });
+
+                        // Pour gérer le mouvement de la souris
+                        cell.addEventListener("mousemove", (e) => {
+                            // Optionnel: ajuster la position pendant le mouvement
+                            tooltip.style.left = `${e.clientX}px`;
+                            tooltip.style.top = `${e.clientY - tooltip.offsetHeight - 10}px`;
+                            tooltip.style.transform = "translateX(-50%)";
+                        });
+                    }
+                });
+
+                // Cacher le tooltip quand la souris quitte la fenêtre
+                document.addEventListener("mouseleave", () => {
+                    tooltip.classList.add("hidden");
+                });
             }
 
             function attachTableEventListeners() {
@@ -673,9 +739,8 @@ import "../styles/style.css";
 
             async function loadDeleteUtils() {
                 if (!deleteUtils) {
-                    const { DeleteUtils } = await import(
-                        "../lib/deleteUtils.js"
-                    );
+                    const { DeleteUtils } =
+                        await import("../lib/deleteUtils.js");
                     deleteUtils = new DeleteUtils();
                 }
                 return deleteUtils;
@@ -1114,9 +1179,8 @@ import "../styles/style.css";
 
             exportMarkdownBtn.addEventListener("click", async () => {
                 try {
-                    const { generateMarkdown } = await import(
-                        "../lib/export_documents.js"
-                    );
+                    const { generateMarkdown } =
+                        await import("../lib/export_documents.js");
                     const exportData = getExportData();
                     generateMarkdown(
                         exportData.terms,
@@ -1136,9 +1200,8 @@ import "../styles/style.css";
 
             exportJsonBtn.addEventListener("click", async () => {
                 try {
-                    const { generateJSON } = await import(
-                        "../lib/export_documents.js"
-                    );
+                    const { generateJSON } =
+                        await import("../lib/export_documents.js");
                     const exportData = getExportData();
                     generateJSON(
                         exportData.terms,
