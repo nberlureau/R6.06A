@@ -1,0 +1,73 @@
+---
+// src/pages/parser.astro
+import "../styles/global.css";
+import "../styles/style.css";
+---
+
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GlossAI - Parser</title>
+    </head>
+
+    <body class="bg-gray-50">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-8 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="/" class="text-gray-600 hover:text-gray-900">
+                        <svg
+                            class="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </a>
+                    <img
+                        src="static/logo.png"
+                        alt="GlossAI Logo"
+                        width="200px"
+                    />
+                </div>
+                <div class="flex gap-3">
+                    <!-- Bouton pour retourner aux glossaires -->
+                    <a
+                        href="/"
+                        class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                    >
+                        Back to Glossaries
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="px-8 py-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-semibold text-gray-900">Parser</h2>
+                </div>
+
+                <!-- Contenu principal du parser -->
+                <div
+                    class="bg-white rounded-lg shadow-sm border border-gray-200 p-8"
+                >
+                    <div class="text-center py-12">
+                        <p class="text-gray-500 text-lg">Parser Interface</p>
+                        <p class="text-gray-400 mt-2">
+                            This is the parser page. Content will be added here.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
