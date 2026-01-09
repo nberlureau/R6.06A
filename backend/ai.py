@@ -10,7 +10,7 @@ async def get_synonyms(
     glossary_name: str,
     glossary_description: str,
     word: str,
-    definition: str,
+    definition: str | None,
     synonyms: list[str],
     context: list[str],
 ) -> list[str]:

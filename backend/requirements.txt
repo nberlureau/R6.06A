@@ -2,3 +2,5 @@ fastapi
 uvicorn
 ollama
 pyinstaller
+tree-sitter
+tree-sitter-java

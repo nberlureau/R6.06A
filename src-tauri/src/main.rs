@@ -1,11 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use serde::{Deserialize, Serialize};
 use std::{
+    collections::HashMap,
     process::Command,
     sync::{Arc, Mutex},
 };
-use tauri::Manager;
+use tauri::{Manager, Url};
 use tauri_plugin_shell::{process::CommandChild, ShellExt};
 
 const BACKEND_PORT: u16 = 51823;
@@ -92,6 +94,73 @@ async fn suggest_synonyms(
     Ok(synonyms)
 }
 
+#[derive(Deserialize, Serialize)]
+struct AnalysisResults {
+    names: HashMap<String, u32>,
+}
+
+#[derive(Deserialize, Serialize)]
+struct FolderAnalysisResults {
+    files: HashMap<String, AnalysisResults>,
+    names: HashMap<String, u32>,
+}
+
+#[tauri::command]
+async fn analyze_file(path: String) -> Result<AnalysisResults, String> {
+    let client = reqwest::Client::new();
+    let url = Url::parse_with_params(
+        &format!("http://127.0.0.1:{}/api/analyze/file", BACKEND_PORT),
+        &[("path", path)],
+    )
+    .map_err(|e| format!("Failed to build URL: {e}"))?;
+
+    let response = client
+        .get(url)
+        .send()
+        .await
+        .map_err(|e| format!("Failed to send request to backend: {e}"))?;
+
+    if response.status().is_server_error() {
+        return Err(response
+            .text()
+            .await
+            .map_err(|e| format!("Failed to parse backend response with server error: {e}"))?);
+    }
+
+    response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse backend response: {e}"))
+}
+
+#[tauri::command]
+async fn analyze_folder(path: String) -> Result<FolderAnalysisResults, String> {
+    let client = reqwest::Client::new();
+    let url = Url::parse_with_params(
+        &format!("http://127.0.0.1:{}/api/analyze/folder", BACKEND_PORT),
+        &[("path", path)],
+    )
+    .map_err(|e| format!("Failed to build URL: {e}"))?;
+
+    let response = client
+        .get(url)
+        .send()
+        .await
+        .map_err(|e| format!("Failed to send request to backend: {e}"))?;
+
+    if response.status().is_server_error() {
+        return Err(response
+            .text()
+            .await
+            .map_err(|e| format!("Failed to parse backend response with server error: {e}"))?);
+    }
+
+    response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse backend response: {e}"))
+}
+
 fn main() {
     let context = tauri::generate_context!();
 
@@ -101,7 +170,11 @@ fn main() {
             ollama_process: Arc::new(Mutex::new(None)),
             backend_process: Arc::new(Mutex::new(None)),
         })
-        .invoke_handler(tauri::generate_handler![suggest_synonyms])
+        .invoke_handler(tauri::generate_handler![
+            suggest_synonyms,
+            analyze_file,
+            analyze_folder
+        ])
         .setup(|app| {
             let app_handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
