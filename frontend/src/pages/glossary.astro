@@ -39,7 +39,7 @@ import "../styles/style.css";
                 </div>
                 <div class="flex gap-3">
                     <a
-                        href="/parser"
+                        id="parser"
                         class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors"
                     >
                         Parser
@@ -443,6 +443,9 @@ import "../styles/style.css";
             const exportPreviewContainer = document.getElementById(
                 "exportPreviewContainer",
             );
+
+            const link = document.getElementById("parser");
+            link.href = `/parser?id=${glossaryId}`;
 
             // ===== FONCTIONS DE BASE =====
             function saveTerms() {

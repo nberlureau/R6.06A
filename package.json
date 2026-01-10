@@ -14,5 +14,7 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@tauri-apps/plugin-dialog": "^2.5.0"
+  }
 }

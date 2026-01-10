@@ -178,12 +178,6 @@ import "../styles/style.css";
                             <h3 class="text-lg font-semibold text-gray-900">
                                 Analysis Results
                             </h3>
-                            <button
-                                id="exportResultsBtn"
-                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
-                            >
-                                Export to Glossary
-                            </button>
                         </div>
 
                         <!-- Summary Stats -->
@@ -299,7 +293,7 @@ import "../styles/style.css";
         <script>
             // ===== VARIABLES GLOBALES =====
             const urlParams = new URLSearchParams(window.location.search);
-            const glossaryId = urlParams.get("glossaryId");
+            const glossaryId = urlParams.get("id");
             let selectedPath = null;
             let isFile = true;
             let analysisResults = null;
@@ -331,8 +325,6 @@ import "../styles/style.css";
                 document.getElementById("identifiersTable");
             const filesList = document.getElementById("filesList");
             const summaryStats = document.getElementById("summaryStats");
-            const exportResultsBtn =
-                document.getElementById("exportResultsBtn");
 
             // ===== FONCTIONS UTILITAIRES =====
             function updateBackButton() {
@@ -686,80 +678,7 @@ import "../styles/style.css";
                 }
             }
 
-            async function exportAllResults() {
-                if (!glossaryId) {
-                    showError(
-                        "No glossary selected. Please go back to a glossary first.",
-                    );
-                    return;
-                }
-
-                if (!analysisResults) {
-                    showError("No results to export.");
-                    return;
-                }
-
-                try {
-                    showLoading("Exporting identifiers to glossary...");
-
-                    // Charger les glossaires
-                    const glossaries =
-                        JSON.parse(localStorage.getItem("glossaries")) || [];
-                    const glossaryIndex = glossaries.findIndex(
-                        (g) => g.id === parseInt(glossaryId),
-                    );
-
-                    if (glossaryIndex === -1) {
-                        showError("Glossary not found.");
-                        return;
-                    }
-
-                    // Ajouter tous les identifiants
-                    const glossary = glossaries[glossaryIndex];
-                    const names = isFile
-                        ? analysisResults.names
-                        : analysisResults.names;
-                    const identifiers = Object.keys(names);
-                    let nextId =
-                        Math.max(...glossary.terms.map((t) => t.id), 0) + 1;
-                    let addedCount = 0;
-
-                    identifiers.forEach((identifier) => {
-                        // Vérifier si le terme existe déjà
-                        const exists = glossary.terms.some(
-                            (t) =>
-                                t.term.toLowerCase() ===
-                                identifier.toLowerCase(),
-                        );
-
-                        if (!exists) {
-                            glossary.terms.push({
-                                id: nextId++,
-                                term: identifier,
-                                definition: `Extracted from code analysis (${selectedPath.split("/").pop()})`,
-                                synonyms: [],
-                            });
-                            addedCount++;
-                        }
-                    });
-
-                    // Sauvegarder
-                    localStorage.setItem(
-                        "glossaries",
-                        JSON.stringify(glossaries),
-                    );
-
-                    hideLoading();
-                    showMessage(
-                        `${addedCount} identifiers exported to glossary!`,
-                        "success",
-                    );
-                } catch (error) {
-                    showError(
-                        `Failed to export results: ${error.message || error}`,
-                    );
-                }
-            }
+            
 
             // ===== GESTION DES MESSAGES =====
             function showMessage(message, type = "success") {
@@ -851,7 +770,6 @@ import "../styles/style.css";
             selectFolderBtn.addEventListener("click", selectFolder);
             clearSelectionBtn.addEventListener("click", clearSelection);
             analyzeBtn.addEventListener("click", analyze);
-            exportResultsBtn.addEventListener("click", exportAllResults);
             tabAll.addEventListener("click", () => switchTab("all"));
             tabFiles.addEventListener("click", () => switchTab("files"));
 
