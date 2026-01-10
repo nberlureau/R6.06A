@@ -38,13 +38,12 @@ import "../styles/style.css";
                     />
                 </div>
                 <div class="flex gap-3">
-                    <!-- Bouton pour retourner aux glossaires -->
-                    <a
-                        href="/"
+                    <button
+                        id="backBtn"
                         class="bg-primary hover-bg-primary text-white px-6 py-2 rounded-lg font-medium transition-colors"
                     >
-                        Back to Glossaries
-                    </a>
+                        Back to Glossary
+                    </button>
                 </div>
             </div>
         </header>
@@ -53,21 +52,812 @@ import "../styles/style.css";
         <main class="px-8 py-8">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-semibold text-gray-900">Parser</h2>
+                    <h2 class="text-3xl font-semibold text-gray-900">
+                        Java Code Parser
+                    </h2>
                 </div>
 
-                <!-- Contenu principal du parser -->
+                <div class="mb-8">
+                    <p class="text-gray-600">
+                        Analyze Java files to extract class names, methods,
+                        variables, and other identifiers.
+                    </p>
+                </div>
+
+                <!-- Upload/Select Section -->
                 <div
-                    class="bg-white rounded-lg shadow-sm border border-gray-200 p-8"
+                    class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8"
                 >
-                    <div class="text-center py-12">
-                        <p class="text-gray-500 text-lg">Parser Interface</p>
-                        <p class="text-gray-400 mt-2">
-                            This is the parser page. Content will be added here.
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        Select Source
+                    </h3>
+
+                    <div class="flex gap-4 mb-6">
+                        <button
+                            id="selectFileBtn"
+                            class="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary hover:bg-blue-50 transition-colors"
+                        >
+                            <svg
+                                class="w-12 h-12 text-gray-400 mb-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                ></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium"
+                                >Analyze Single File</span
+                            >
+                            <span class="text-sm text-gray-500 mt-1"
+                                >.java files only</span
+                            >
+                        </button>
+
+                        <button
+                            id="selectFolderBtn"
+                            class="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary hover:bg-blue-50 transition-colors"
+                        >
+                            <svg
+                                class="w-12 h-12 text-gray-400 mb-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                                ></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium"
+                                >Analyze Folder</span
+                            >
+                            <span class="text-sm text-gray-500 mt-1"
+                                >Recursive .java file analysis</span
+                            >
+                        </button>
+                    </div>
+
+                    <!-- Selected Path Display -->
+                    <div
+                        id="selectedPathContainer"
+                        class="hidden mb-4 p-4 bg-gray-50 rounded-lg"
+                    >
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-600">Selected:</p>
+                                <p
+                                    id="selectedPath"
+                                    class="text-gray-900 font-medium"
+                                >
+                                </p>
+                            </div>
+                            <button
+                                id="clearSelectionBtn"
+                                class="text-gray-500 hover:text-gray-700"
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Analyze Button -->
+                    <button
+                        id="analyzeBtn"
+                        disabled
+                        class="w-full bg-primary hover-bg-primary text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Analyze Code
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div id="resultsContainer" class="hidden">
+                    <div
+                        class="bg-white rounded-lg shadow-sm border border-gray-200 p-8"
+                    >
+                        <!-- Results Header -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                Analysis Results
+                            </h3>
+                            <button
+                                id="exportResultsBtn"
+                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+                            >
+                                Export to Glossary
+                            </button>
+                        </div>
+
+                        <!-- Summary Stats -->
+                        <div
+                            id="summaryStats"
+                            class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+                        >
+                            <!-- Stats will be populated here -->
+                        </div>
+
+                        <!-- Results Tabs -->
+                        <div class="mb-6">
+                            <div class="flex gap-2 bg-gray-200 p-1 rounded-lg">
+                                <button
+                                    id="tabAll"
+                                    class="px-6 py-2 rounded-md font-medium transition-colors bg-white text-gray-900 shadow-sm"
+                                >
+                                    All Identifiers
+                                </button>
+                                <button
+                                    id="tabFiles"
+                                    class="px-6 py-2 rounded-md font-medium transition-colors text-gray-600 hover:text-gray-900"
+                                >
+                                    By File
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Results Content -->
+                        <div class="space-y-6">
+                            <!-- All Identifiers View -->
+                            <div id="allIdentifiersView">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th
+                                                    class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                                                    >Identifier</th
+                                                >
+                                                <th
+                                                    class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                                                    >Occurrences</th
+                                                >
+                                                <th
+                                                    class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                                                    >Actions</th
+                                                >
+                                            </tr>
+                                        </thead>
+                                        <tbody
+                                            id="identifiersTable"
+                                            class="divide-y divide-gray-200"
+                                        >
+                                            <!-- Will be populated with JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- By File View -->
+                            <div id="byFileView" class="hidden">
+                                <div id="filesList" class="space-y-4">
+                                    <!-- Will be populated with JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingContainer" class="hidden">
+                    <div
+                        class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
+                    >
+                        <div
+                            class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
+                        >
+                        </div>
+                        <p class="mt-4 text-gray-600">Analyzing code...</p>
+                        <p id="loadingDetails" class="text-sm text-gray-500">
                         </p>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorContainer" class="hidden">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                        <div class="flex items-center">
+                            <svg
+                                class="w-6 h-6 text-red-600 mr-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                ></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-red-800">
+                                Analysis Error
+                            </h3>
+                        </div>
+                        <p id="errorMessage" class="mt-2 text-red-700"></p>
                     </div>
                 </div>
             </div>
         </main>
+
+        <script>
+            // ===== VARIABLES GLOBALES =====
+            const urlParams = new URLSearchParams(window.location.search);
+            const glossaryId = urlParams.get("glossaryId");
+            let selectedPath = null;
+            let isFile = true;
+            let analysisResults = null;
+
+            // ===== ÉLÉMENTS DU DOM =====
+            const backBtn = document.getElementById("backBtn");
+            const selectFileBtn = document.getElementById("selectFileBtn");
+            const selectFolderBtn = document.getElementById("selectFolderBtn");
+            const selectedPathContainer = document.getElementById(
+                "selectedPathContainer",
+            );
+            const selectedPathElement = document.getElementById("selectedPath");
+            const clearSelectionBtn =
+                document.getElementById("clearSelectionBtn");
+            const analyzeBtn = document.getElementById("analyzeBtn");
+            const resultsContainer =
+                document.getElementById("resultsContainer");
+            const loadingContainer =
+                document.getElementById("loadingContainer");
+            const errorContainer = document.getElementById("errorContainer");
+            const errorMessage = document.getElementById("errorMessage");
+            const loadingDetails = document.getElementById("loadingDetails");
+            const tabAll = document.getElementById("tabAll");
+            const tabFiles = document.getElementById("tabFiles");
+            const allIdentifiersView =
+                document.getElementById("allIdentifiersView");
+            const byFileView = document.getElementById("byFileView");
+            const identifiersTable =
+                document.getElementById("identifiersTable");
+            const filesList = document.getElementById("filesList");
+            const summaryStats = document.getElementById("summaryStats");
+            const exportResultsBtn =
+                document.getElementById("exportResultsBtn");
+
+            // ===== FONCTIONS UTILITAIRES =====
+            function updateBackButton() {
+                if (glossaryId) {
+                    backBtn.onclick = () => {
+                        window.location.href = `/glossary?id=${glossaryId}`;
+                    };
+                } else {
+                    backBtn.onclick = () => {
+                        window.location.href = "/";
+                    };
+                }
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorContainer.classList.remove("hidden");
+                loadingContainer.classList.add("hidden");
+                resultsContainer.classList.add("hidden");
+            }
+
+            function clearError() {
+                errorContainer.classList.add("hidden");
+            }
+
+            function showLoading(message = "Analyzing code...") {
+                loadingDetails.textContent = message;
+                loadingContainer.classList.remove("hidden");
+                errorContainer.classList.add("hidden");
+                resultsContainer.classList.add("hidden");
+            }
+
+            function hideLoading() {
+                loadingContainer.classList.add("hidden");
+            }
+
+            // ===== GESTION DE LA SÉLECTION =====
+            async function selectFile() {
+                try {
+                    const { open } = window.__TAURI__.dialog;
+                    const selected = await open({
+                        filters: [
+                            {
+                                name: "Java",
+                                extensions: ["java"],
+                            },
+                        ],
+                    });
+
+                    if (selected) {
+                        selectedPath = selected;
+                        isFile = true;
+                        updateSelectionDisplay();
+                    }
+                } catch (error) {
+                    showError(
+                        `Error selecting file: ${error.message || error}`,
+                    );
+                }
+            }
+
+            async function selectFolder() {
+                try {
+                    const { open } = window.__TAURI__.dialog;
+                    const selected = await open({
+                        directory: true,
+                    });
+
+                    if (selected) {
+                        selectedPath = selected;
+                        isFile = false;
+                        updateSelectionDisplay();
+                    }
+                } catch (error) {
+                    showError(
+                        `Error selecting folder: ${error.message || error}`,
+                    );
+                }
+            }
+
+            function updateSelectionDisplay() {
+                if (selectedPath) {
+                    selectedPathElement.textContent = selectedPath;
+                    selectedPathContainer.classList.remove("hidden");
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove(
+                        "disabled:opacity-50",
+                        "disabled:cursor-not-allowed",
+                    );
+                } else {
+                    selectedPathContainer.classList.add("hidden");
+                    analyzeBtn.disabled = true;
+                    analyzeBtn.classList.add(
+                        "disabled:opacity-50",
+                        "disabled:cursor-not-allowed",
+                    );
+                }
+            }
+
+            function clearSelection() {
+                selectedPath = null;
+                updateSelectionDisplay();
+                clearError();
+                resultsContainer.classList.add("hidden");
+            }
+
+            // ===== ANALYSE =====
+            async function analyze() {
+                if (!selectedPath) return;
+
+                clearError();
+                showLoading(
+                    isFile
+                        ? `Analyzing file: ${selectedPath.split("/").pop()}`
+                        : `Analyzing folder: ${selectedPath.split("/").pop()}`,
+                );
+
+                try {
+                    const { invoke } = window.__TAURI__.core;
+
+                    if (isFile) {
+                        analysisResults = await invoke("analyze_file", {
+                            path: selectedPath,
+                        });
+                    } else {
+                        analysisResults = await invoke("analyze_folder", {
+                            path: selectedPath,
+                        });
+                    }
+
+                    hideLoading();
+                    displayResults();
+                } catch (error) {
+                    showError(`Analysis failed: ${error.message || error}`);
+                }
+            }
+
+            // ===== AFFICHAGE DES RÉSULTATS =====
+            function displayResults() {
+                if (!analysisResults) return;
+
+                // Mettre à jour les statistiques
+                updateSummaryStats();
+
+                // Afficher tous les identifiants
+                displayAllIdentifiers();
+
+                // Afficher par fichier (si dossier)
+                if (!isFile) {
+                    displayByFile();
+                }
+
+                // Afficher le conteneur de résultats
+                resultsContainer.classList.remove("hidden");
+
+                // Gérer les onglets
+                if (isFile) {
+                    tabFiles.style.display = "none";
+                }
+            }
+
+            function updateSummaryStats() {
+                if (isFile) {
+                    // Pour un fichier
+                    const total = Object.values(analysisResults.names).reduce(
+                        (a, b) => a + b,
+                        0,
+                    );
+                    const unique = Object.keys(analysisResults.names).length;
+
+                    summaryStats.innerHTML = `
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-sm text-blue-600">Total Occurrences</p>
+                            <p class="text-2xl font-semibold text-blue-900">${total}</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-sm text-green-600">Unique Identifiers</p>
+                            <p class="text-2xl font-semibold text-green-900">${unique}</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <p class="text-sm text-purple-600">File Type</p>
+                            <p class="text-2xl font-semibold text-purple-900">Java</p>
+                        </div>
+                    `;
+                } else {
+                    // Pour un dossier
+                    const totalOccurrences = Object.values(
+                        analysisResults.names,
+                    ).reduce((a, b) => a + b, 0);
+                    const uniqueIdentifiers = Object.keys(
+                        analysisResults.names,
+                    ).length;
+                    const fileCount = Object.keys(analysisResults.files).length;
+
+                    summaryStats.innerHTML = `
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-sm text-blue-600">Files Analyzed</p>
+                            <p class="text-2xl font-semibold text-blue-900">${fileCount}</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-sm text-green-600">Total Occurrences</p>
+                            <p class="text-2xl font-semibold text-green-900">${totalOccurrences}</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <p class="text-sm text-purple-600">Unique Identifiers</p>
+                            <p class="text-2xl font-semibold text-purple-900">${uniqueIdentifiers}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            function displayAllIdentifiers() {
+                const names = isFile
+                    ? analysisResults.names
+                    : analysisResults.names;
+                const sortedNames = Object.entries(names).sort(
+                    (a, b) => b[1] - a[1],
+                );
+
+                identifiersTable.innerHTML = sortedNames
+                    .map(
+                        ([name, count]) => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">${name}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${count > 5 ? "bg-red-100 text-red-800" : count > 2 ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}">
+                                ${count} occurrence${count > 1 ? "s" : ""}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <button class="text-blue-600 hover:text-blue-900 text-sm font-medium add-identifier" data-identifier="${name}">
+                                Add to Glossary
+                            </button>
+                        </td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+
+                // Ajouter les écouteurs d'événements
+                document.querySelectorAll(".add-identifier").forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const identifier = this.getAttribute("data-identifier");
+                        addIdentifierToGlossary(identifier);
+                    });
+                });
+            }
+
+            function displayByFile() {
+                if (isFile) return;
+
+                filesList.innerHTML = Object.entries(analysisResults.files)
+                    .map(([filePath, fileData]) => {
+                        const fileName = filePath.split("/").pop();
+                        const total = Object.values(fileData.names).reduce(
+                            (a, b) => a + b,
+                            0,
+                        );
+                        const unique = Object.keys(fileData.names).length;
+
+                        return `
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <div class="bg-gray-50 px-4 py-3 flex justify-between items-center">
+                                <div>
+                                    <span class="font-medium text-gray-900">${fileName}</span>
+                                    <span class="text-sm text-gray-500 ml-2">${filePath}</span>
+                                </div>
+                                <span class="text-sm text-gray-600">
+                                    ${unique} unique • ${total} total
+                                </span>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex flex-wrap gap-2">
+                                    ${Object.entries(fileData.names)
+                                        .slice(0, 10)
+                                        .map(
+                                            ([name, count]) => `
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800">
+                                            ${name}
+                                            <span class="ml-1 text-xs text-gray-500">(${count})</span>
+                                        </span>
+                                    `,
+                                        )
+                                        .join("")}
+                                    ${
+                                        Object.keys(fileData.names).length > 10
+                                            ? `<span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-600">
+                                            +${Object.keys(fileData.names).length - 10} more
+                                        </span>`
+                                            : ""
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    })
+                    .join("");
+            }
+
+            // ===== AJOUT AU GLOSSAIRE =====
+            async function addIdentifierToGlossary(identifier) {
+                if (!glossaryId) {
+                    showError(
+                        "No glossary selected. Please go back to a glossary first.",
+                    );
+                    return;
+                }
+
+                try {
+                    // Charger les glossaires
+                    const glossaries =
+                        JSON.parse(localStorage.getItem("glossaries")) || [];
+                    const glossaryIndex = glossaries.findIndex(
+                        (g) => g.id === parseInt(glossaryId),
+                    );
+
+                    if (glossaryIndex === -1) {
+                        showError("Glossary not found.");
+                        return;
+                    }
+
+                    // Ajouter le terme au glossaire
+                    const glossary = glossaries[glossaryIndex];
+                    const nextId =
+                        Math.max(...glossary.terms.map((t) => t.id), 0) + 1;
+
+                    glossary.terms.push({
+                        id: nextId,
+                        term: identifier,
+                        definition: `Extracted from code analysis (${selectedPath.split("/").pop()})`,
+                        synonyms: [],
+                    });
+
+                    // Sauvegarder
+                    localStorage.setItem(
+                        "glossaries",
+                        JSON.stringify(glossaries),
+                    );
+
+                    // Afficher un message de succès
+                    showMessage(
+                        `"${identifier}" added to glossary!`,
+                        "success",
+                    );
+                } catch (error) {
+                    showError(
+                        `Failed to add identifier: ${error.message || error}`,
+                    );
+                }
+            }
+
+            async function exportAllResults() {
+                if (!glossaryId) {
+                    showError(
+                        "No glossary selected. Please go back to a glossary first.",
+                    );
+                    return;
+                }
+
+                if (!analysisResults) {
+                    showError("No results to export.");
+                    return;
+                }
+
+                try {
+                    showLoading("Exporting identifiers to glossary...");
+
+                    // Charger les glossaires
+                    const glossaries =
+                        JSON.parse(localStorage.getItem("glossaries")) || [];
+                    const glossaryIndex = glossaries.findIndex(
+                        (g) => g.id === parseInt(glossaryId),
+                    );
+
+                    if (glossaryIndex === -1) {
+                        showError("Glossary not found.");
+                        return;
+                    }
+
+                    // Ajouter tous les identifiants
+                    const glossary = glossaries[glossaryIndex];
+                    const names = isFile
+                        ? analysisResults.names
+                        : analysisResults.names;
+                    const identifiers = Object.keys(names);
+                    let nextId =
+                        Math.max(...glossary.terms.map((t) => t.id), 0) + 1;
+                    let addedCount = 0;
+
+                    identifiers.forEach((identifier) => {
+                        // Vérifier si le terme existe déjà
+                        const exists = glossary.terms.some(
+                            (t) =>
+                                t.term.toLowerCase() ===
+                                identifier.toLowerCase(),
+                        );
+
+                        if (!exists) {
+                            glossary.terms.push({
+                                id: nextId++,
+                                term: identifier,
+                                definition: `Extracted from code analysis (${selectedPath.split("/").pop()})`,
+                                synonyms: [],
+                            });
+                            addedCount++;
+                        }
+                    });
+
+                    // Sauvegarder
+                    localStorage.setItem(
+                        "glossaries",
+                        JSON.stringify(glossaries),
+                    );
+
+                    hideLoading();
+                    showMessage(
+                        `${addedCount} identifiers exported to glossary!`,
+                        "success",
+                    );
+                } catch (error) {
+                    showError(
+                        `Failed to export results: ${error.message || error}`,
+                    );
+                }
+            }
+
+            // ===== GESTION DES MESSAGES =====
+            function showMessage(message, type = "success") {
+                // Créer un toast
+                const toast = document.createElement("div");
+                toast.className = `fixed top-4 right-4 border rounded-lg shadow-lg p-4 z-50 transition-opacity duration-300 ${
+                    type === "success"
+                        ? "bg-green-100 border-green-400 text-green-700"
+                        : type === "error"
+                          ? "bg-red-100 border-red-400 text-red-700"
+                          : "bg-blue-100 border-blue-400 text-blue-700"
+                }`;
+
+                toast.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1">
+                            <p class="font-medium">${message}</p>
+                        </div>
+                        <button type="button" class="close-toast text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+                `;
+
+                document.body.appendChild(toast);
+
+                toast
+                    .querySelector(".close-toast")
+                    .addEventListener("click", () => {
+                        toast.remove();
+                    });
+
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 5000);
+            }
+
+            // ===== GESTION DES ONGLETS =====
+            function switchTab(tab) {
+                if (tab === "all") {
+                    tabAll.classList.remove(
+                        "text-gray-600",
+                        "hover:text-gray-900",
+                    );
+                    tabAll.classList.add(
+                        "bg-white",
+                        "text-gray-900",
+                        "shadow-sm",
+                    );
+                    tabFiles.classList.remove(
+                        "bg-white",
+                        "text-gray-900",
+                        "shadow-sm",
+                    );
+                    tabFiles.classList.add(
+                        "text-gray-600",
+                        "hover:text-gray-900",
+                    );
+                    allIdentifiersView.classList.remove("hidden");
+                    byFileView.classList.add("hidden");
+                } else {
+                    tabFiles.classList.remove(
+                        "text-gray-600",
+                        "hover:text-gray-900",
+                    );
+                    tabFiles.classList.add(
+                        "bg-white",
+                        "text-gray-900",
+                        "shadow-sm",
+                    );
+                    tabAll.classList.remove(
+                        "bg-white",
+                        "text-gray-900",
+                        "shadow-sm",
+                    );
+                    tabAll.classList.add(
+                        "text-gray-600",
+                        "hover:text-gray-900",
+                    );
+                    byFileView.classList.remove("hidden");
+                    allIdentifiersView.classList.add("hidden");
+                }
+            }
+
+            // ===== ÉCOUTEURS D'ÉVÉNEMENTS =====
+            selectFileBtn.addEventListener("click", selectFile);
+            selectFolderBtn.addEventListener("click", selectFolder);
+            clearSelectionBtn.addEventListener("click", clearSelection);
+            analyzeBtn.addEventListener("click", analyze);
+            exportResultsBtn.addEventListener("click", exportAllResults);
+            tabAll.addEventListener("click", () => switchTab("all"));
+            tabFiles.addEventListener("click", () => switchTab("files"));
+
+            // ===== INITIALISATION =====
+            updateBackButton();
+            updateSelectionDisplay();
+        </script>
     </body>
 </html>

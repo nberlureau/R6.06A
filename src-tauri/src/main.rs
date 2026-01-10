@@ -166,6 +166,7 @@ fn main() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             ollama_process: Arc::new(Mutex::new(None)),
             backend_process: Arc::new(Mutex::new(None)),
