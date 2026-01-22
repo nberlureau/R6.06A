@@ -30,6 +30,6 @@ export class ImportUtils {
         this.renderer.render();
         this.modals.close("importModal");
 
-        window.location.href = `/glossary?id=${glossary.id}`;
+        globalThis.location.href = `/glossary?id=${glossary.id}`;
     }
 }

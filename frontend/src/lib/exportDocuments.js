@@ -22,7 +22,7 @@ function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], ti
       if (Array.isArray(cell)) {
         return cell.length > 0 ? cell.join(", ") : "-";
       }
-      return String(cell || "-").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      return String(cell || "-").replaceAll(/\n/, " ").replaceAll(/\s+/, " ").trim();
     });
     return `| ${formattedRow.join(" | ")} |`;
   }).join("\n");
@@ -33,10 +33,10 @@ function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], ti
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${title.toLowerCase().replace(/\s+/g, '_')}.md`;
+  link.download = `${title.toLowerCase().replaceAll(/\s+/g, '_')}.md`;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
   URL.revokeObjectURL(url);
 }
 
@@ -104,10 +104,10 @@ function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title 
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${title.toLowerCase().replace(/\s+/g, '_')}.json`;
+  link.download = `${title.toLowerCase().replaceAll(/\s+/g, '_')}.json`;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
   URL.revokeObjectURL(url);
 }
 
@@ -165,7 +165,7 @@ function generateMarkdownString(data, headers = ["Word", "Definition", "Synonyms
       if (Array.isArray(cell)) {
         return cell.length > 0 ? cell.join(", ") : "-";
       }
-      return String(cell || "-").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      return String(cell || "-").replaceAll(/\n/, " ").replaceAll(/\s+/, " ").trim();
     });
     return `| ${formattedRow.join(" | ")} |`;
   }).join("\n");

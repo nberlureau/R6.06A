@@ -1,4 +1,3 @@
-import { GlossaryManager } from "../src/lib/glossaryManager.js";
 import { ModalManager } from "../src/lib/modalManager.js";
 
 // Initialisations
@@ -167,15 +166,13 @@ importConfirmBtn.addEventListener("click", async () => {
     }
 
     try {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const fileContent = e.target.result;
+        const fileContent = await importFileInput.files[0].text();
 
-            if (fileExtension === "md") {
-                const { parseMarkdown } = await import(
-                    "../src/lib/exportDocuments.js"
-                );
-                const parsedData = parseMarkdown(fileContent);
+        if (fileExtension === "md") {
+            const { parseMarkdown } = await import(
+                "../src/lib/exportDocuments.js"
+            );
+            const parsedData = parseMarkdown(fileContent);
 
                 // Create new glossary from imported data
                 const newGlossary = {
@@ -192,7 +189,7 @@ importConfirmBtn.addEventListener("click", async () => {
                             typeof row[2] === "string" ? row[2]
                                 .split(",")
                                 .map((s) => s.trim())
-                                .filter((s) => s)
+                                .filter(Boolean)
                             : Array.isArray(row[2]) ? row[2] : [],
                     })),
                 };
@@ -213,27 +210,27 @@ importConfirmBtn.addEventListener("click", async () => {
                     description:
                         parsedData.description ||
                         "Imported from JSON file",
-                    terms: parsedData.data.map((row, index) => ({
-                        id: index + 1,
-                        term: row[0],
-                        definition: row[1],
-                        synonyms: Array.isArray(row[2])
-                            ? row[2]
-                            : [],
-                    })),
+                    terms: parsedData.data.map((row, index) => {
+                        const synonyms = Array.isArray(row[2]) ? row[2] : [];
+
+                        return {
+                            id: index + 1,
+                            term: row[0],
+                            definition: row[1],
+                            synonyms,
+                        };
+                    }),
                 };
 
                 glossaryManager.create(newGlossary.name, newGlossary.description, newGlossary.terms);
                 modalManager.render();
                 modalManager.close("importModal");
             }
-        };
-        reader.readAsText(file);
-    } catch (error) {
-        console.error("Import error:", error);
-        importError.textContent = "Error importing file: " + error.message;
-        importError.classList.remove("hidden");
-    }
+        } catch (error) {
+            console.error("Import error:", error);
+            importError.textContent = "Error importing file: " + error.message;
+            importError.classList.remove("hidden");
+        }
 });
 
 document.addEventListener("keydown", (e) => {

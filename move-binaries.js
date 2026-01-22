@@ -1,5 +1,5 @@
-import { execSync } from 'child_process';
-import fs from 'fs';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
 
 const platform = process.platform;
 const isWindows = platform === 'win32';
