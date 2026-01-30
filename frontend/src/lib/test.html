@@ -79,7 +79,7 @@
                 },
                 typescript: {
                     class: /(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/g,
-                    function: /(?:export\s+)?(?:async\s+)?(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s*)?\(?[^)]*\)?\s*=>|(\w+)\s*:\s*(?:async\s*)?function|(?:public|private|protected)?\s*(?:static)?\s*(?:async)?\s*(\w+)\s*\([^)]*\)\s*:\s*[^{]+\{)/g
+                    function: /(?:function|const|let|var)\s+(\w+)|(\w+)\s*\(/g
                 },
                 kotlin: {
                     class: /(?:data\s+|sealed\s+|open\s+|abstract\s+)?class\s+(\w+)/g,

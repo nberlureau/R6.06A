@@ -37,7 +37,7 @@ function parseCodeFile(fileContent, language) {
   const patterns = {
     java: {
       class: /(?:public|private|protected)?\s*(?:static|final|abstract)?\s*(?:class|interface|enum)\s+(\w+)/g,
-      function: /(?:public|private|protected|static|final|abstract|synchronized)?\s*(?:<[^>]+>\s*)?[\w<>]+\s+(\w+)\s*\([^)]*\)\s*(?:throws\s+[\w\s,]+)?\s*\{/g
+      function: /\w+\s+(\w+)\s*\([^)]*\)\s*\{/g
     },
     php: {
       class: /(?:abstract|final)?\s*class\s+(\w+)/g,
@@ -50,7 +50,7 @@ function parseCodeFile(fileContent, language) {
     },
     typescript: {
       class: /(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/g,
-      function: /(?:export\s+)?(?:async\s+)?function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=|(?:public|private|protected)?\s*(?:static)?\s*(?:async)?\s*(\w+)\s*\(/g
+      function: /(?:function|const|let|var)\s+(\w+)|(\w+)\s*\(/g
     },
     kotlin: {
       class: /(?:data\s+|sealed\s+|open\s+|abstract\s+)?class\s+(\w+)/g,
@@ -62,7 +62,7 @@ function parseCodeFile(fileContent, language) {
     },
     csharp: {
       class: /(?:public|private|protected|internal)?\s*(?:static|sealed|abstract|partial)?\s*(?:class|interface|struct)\s+(\w+)/g,
-      function: /(?:public|private|protected|internal|static|virtual|override|abstract|async)?\s*[\w<>]+\s+(\w+)\s*\(/g
+      function: /[\w<>]+\s+(\w+)\s*\(/g
     }
   };
 
