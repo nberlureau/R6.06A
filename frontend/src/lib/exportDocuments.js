@@ -1,4 +1,4 @@
-function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
+function generateMarkdownString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
   if (!Array.isArray(data) || data.some(row => !Array.isArray(row) || row.length !== headers.length)) {
     throw new Error(`Invalid data format`);
   }
@@ -22,21 +22,25 @@ function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], ti
       if (Array.isArray(cell)) {
         return cell.length > 0 ? cell.join(", ") : "-";
       }
-      return String(cell || "-").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      return String(cell || "-").replaceAll(/\n/, " ").replaceAll(/\s+/, " ").trim();
     });
     return `| ${formattedRow.join(" | ")} |`;
   }).join("\n");
 
-  const markdownTable = markdown + headerRow + "\n" + separatorRow + "\n" + dataRows;
+  return markdown + headerRow + "\n" + separatorRow + "\n" + dataRows;
+}
+
+function generateMarkdown(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
+  const markdownTable = generateMarkdownString(data, headers, title, description);
 
   const blob = new Blob([markdownTable], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${title.toLowerCase().replace(/\s+/g, '_')}.md`;
+  link.download = `${title.toLowerCase().replaceAll(/\s+/g, '_')}.md`;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
   URL.revokeObjectURL(url);
 }
 
@@ -88,7 +92,7 @@ function parseMarkdown(markdownContent) {
   };
 }
 
-function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
+function generateJSONString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
   const structuredData = {
     glossary: {
       name: title,
@@ -100,14 +104,20 @@ function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title 
     data: data
   };
 
-  const blob = new Blob([JSON.stringify(structuredData, null, 2)], { type: "application/json" });
+  return JSON.stringify(structuredData, null, 2);
+}
+
+function generateJSON(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
+  const jsonContent = generateJSONString(data, headers, title, description);
+
+  const blob = new Blob([jsonContent], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${title.toLowerCase().replace(/\s+/g, '_')}.json`;
+  link.download = `${title.toLowerCase().replaceAll(/\s+/g, '_')}.json`;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
   URL.revokeObjectURL(url);
 }
 
@@ -141,52 +151,5 @@ function parseJSON(jsonContent) {
 }
 
 // Fonctions pour la prévisualisation (retournent le contenu sans télécharger)
-function generateMarkdownString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
-  if (!Array.isArray(data) || data.some(row => !Array.isArray(row) || row.length !== headers.length)) {
-    throw new Error(`Invalid data format`);
-  }
 
-  let markdown = `# ${title}\n\n`;
-
-  // Ajouter la description si elle existe
-  if (description) {
-    markdown += `**Description:** ${description}\n\n`;
-  }
-
-  // Ajouter les métadonnées
-  markdown += `**Export Date:** ${new Date().toLocaleDateString()}\n`;
-  markdown += `**Number of Terms:** ${data.length}\n\n`;
-
-  const headerRow = `| ${headers.join(" | ")} |`;
-  const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`;
-
-  const dataRows = data.map(row => {
-    const formattedRow = row.map(cell => {
-      if (Array.isArray(cell)) {
-        return cell.length > 0 ? cell.join(", ") : "-";
-      }
-      return String(cell || "-").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
-    });
-    return `| ${formattedRow.join(" | ")} |`;
-  }).join("\n");
-
-  return markdown + headerRow + "\n" + separatorRow + "\n" + dataRows;
-}
-
-function generateJSONString(data, headers = ["Word", "Definition", "Synonyms"], title = "Glossary", description = "") {
-  const structuredData = {
-    glossary: {
-      name: title,
-      description: description,
-      exportDate: new Date().toISOString(),
-      termCount: data.length
-    },
-    headers: headers,
-    data: data
-  };
-
-  return JSON.stringify(structuredData, null, 2);
-}
-
-// Exportez les fonctions pour les rendre disponibles
 export { generateMarkdown, parseMarkdown, generateJSON, parseJSON, generateMarkdownString, generateJSONString };

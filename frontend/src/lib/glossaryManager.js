@@ -1,9 +1,8 @@
-import { ModalManager } from "./modalManager.js";
-
 export class GlossaryManager {
+    glossaries = [];
+    currentEditId = null;
+
     constructor() {
-        this.currentEditId = null;
-        this.glossaries = null;
         this.load();
     }
 
@@ -55,6 +54,6 @@ export class GlossaryManager {
     }
 
     redirectTo(id) {
-        window.location.href = `/glossary?id=${id}`;
+        globalThis.location.href = `/glossary?id=${id}`;
     }
 }

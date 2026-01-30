@@ -1,9 +1,10 @@
 // frontend/src/lib/confirmModal.js
 export class ConfirmModal {
+    modal = null;
+    resolve = null;
+    reject = null;
+
     constructor() {
-        this.modal = null;
-        this.resolve = null;
-        this.reject = null;
         this.init();
     }
 
