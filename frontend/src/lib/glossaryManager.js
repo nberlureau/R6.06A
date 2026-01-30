@@ -1,4 +1,5 @@
 export class GlossaryManager {
+    glossaries = [];
     currentEditId = null;
 
     constructor() {
