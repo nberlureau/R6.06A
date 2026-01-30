@@ -58,9 +58,9 @@
                     break;
                 case 'php':
                     cleanedContent = cleanedContent
-                        .replace(/\/\*[\s\S]*?\*\//g, '')
-                        .replace(/\/\/.*/g, '')
-                        .replace(/#.*/g, '');
+                        .replaceAll(/\/\*[\s\S]*?\*\//g, '')
+                        .replaceAll(/\/\/.*/g, '')
+                        .replaceAll(/#.*/g, '');
                     break;
             }
 
