@@ -9,10 +9,17 @@
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "pyinstaller -y -F -w --distpath ./build/dist --workpath ./build/pybuild --specpath ./backend -n backend backend/main.py && node move-binaries.js",
     "build:tauri": "cargo tauri build",
-    "tauri": "cargo tauri"
+    "tauri": "cargo tauri",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
+    "concurrently": "^8.2.2",
+    "jsdom": "^27.4.0",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@tauri-apps/plugin-dialog": "^2.5.0"
