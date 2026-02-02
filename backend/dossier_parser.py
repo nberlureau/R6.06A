@@ -12,6 +12,7 @@ from collections import Counter
 # les conflits avec le module standard 'parser' (W4901)
 try:
     sys.path.insert(0, str(Path(__file__).parent))
+    # pylint: disable=deprecated-module
     import parser as code_parser
 except ImportError:
     print("pas de module")
@@ -45,12 +46,11 @@ def trouver_fichiers_java(dossier: str) -> list[str]:
     return fichiers_java
 
 
-def get_folder_stats(dossier: str, fichiers: list[str]) -> tuple[list[dict], list[str]]:
+def get_folder_stats(fichiers: list[str]) -> tuple[list[dict], list[str]]:
     """
     Analyse les fichiers donnés et retourne les statistiques.
 
     Args:
-        dossier: Le dossier racine (pour information).
         fichiers: Liste des fichiers à analyser.
 
     Returns:
@@ -106,12 +106,15 @@ def analyser_dossier(dossier, return_data=False):
     if not return_data:
         print(f"{len(fichiers)} fichiers trouvés.\n")
 
-    # Logique d'analyse
+    # Logique d'analyse (version data only) non utilisée explicitement ici
+    # car analyser_dossier fait le boulot, mais si on voulait utiliser get_folder_stats:
+    # resultats_fichiers, noms_globaux_liste = get_folder_stats(fichiers)
+    
+    # On réimplémente la boucle ici pour gérer l'affichage progressif si return_data=False
+    # afin de conserver le comportement original de print("Analyse: ...")
     noms_globaux_liste = []
     resultats_fichiers = []
 
-    # On réimplémente la boucle ici pour gérer l'affichage progressif si return_data=False
-    # afin de conserver le comportement original de print("Analyse: ...")
     for fichier in sorted(fichiers):
         try:
             if not return_data:

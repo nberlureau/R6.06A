@@ -39,7 +39,7 @@ async def get_synonyms(
     """
     try:
         ollama.show(MODEL)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         ollama.pull(MODEL)
 
     word = word.strip().lower()

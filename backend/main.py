@@ -16,6 +16,7 @@ from pydantic import BaseModel
 # We import the local parser module as code_parser
 try:
     sys.path.insert(0, str(Path(__file__).parent))
+    # pylint: disable=deprecated-module
     import parser as code_parser
 except ImportError:
     # Fallback or error handling if necessary
