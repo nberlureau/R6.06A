@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach} from 'vitest';
 import { GlossaryManager } from '../src/lib/glossaryManager.js';
 
 describe('GlossaryManager', () => {
@@ -11,9 +11,9 @@ describe('GlossaryManager', () => {
         // Clear localStorage before each test
         localStorage.clear();
 
-        // Mock window.location
-        delete window.location;
-        window.location = { href: '' };
+        // Mock globalThis.location
+        delete globalThis.location;
+        globalThis.location = { href: '' };
 
         glossaryManager = new GlossaryManager();
     });
@@ -57,7 +57,7 @@ describe('GlossaryManager', () => {
 
     it('should redirect to glossary page', () => {
         glossaryManager.redirectTo(1);
-        expect(window.location.href).toBe('/glossary?id=1');
+        expect(globalThis.location.href).toBe('/glossary?id=1');
     });
 
     it('should replace all glossaries', () => {
