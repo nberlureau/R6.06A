@@ -3,7 +3,7 @@ import signal
 from collections import Counter
 
 import uvicorn
-from ai import get_synonyms
+from ai import get_synonyms, Glossary
 from dossier_parser import analyser_dossier
 from fastapi import FastAPI, HTTPException
 from parser import analyze_file
@@ -31,8 +31,10 @@ async def suggest_synonyms(request: SynonymRequest) -> SynonymResponse:
     try:
         # Appeler la fonction get_synonyms avec le terme et le contexte
         synonyms = await get_synonyms(
-            glossary_name=request.glossary_name,
-            glossary_description=request.glossary_description,
+            glossary=Glossary(
+                name=request.glossary_name,
+                description=request.glossary_description,
+            ),
             word=request.term,
             definition=request.definition,
             synonyms=request.synonyms,
