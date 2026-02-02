@@ -3,7 +3,7 @@ import asyncio
 import ollama
 from ollama import AsyncClient
 
-MODEL = "qwen3:0.6b"
+MODEL = "qwen3:0.6b" #OCP pas respecté si l'objectif est de pouvoir modifier le modèle.
 
 
 async def get_synonyms(
