@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from collections import defaultdict, Counter
+from security import validate_path
 
 try:
     from tree_sitter import Language, Parser
@@ -49,10 +50,8 @@ def traverse(node, names_list):  # parcourt récursivement l'arbre syntaxique et
 
 
 def parse_file(filepath):  # parse un fichier Java et retourne l'arbre syntaxique.
-    file_path = Path(filepath)
+    file_path = validate_path(filepath)
     
-    if not file_path.exists():
-        raise FileNotFoundError(f'Le fichier "{filepath}" n\'existe pas.')
     if file_path.suffix.lower() != '.java':
         raise ValueError(f'Extension de fichier non supportée pour "{filepath}". '
                         f'Seuls les fichiers .java sont acceptés.')
@@ -78,7 +77,8 @@ def parse_file(filepath):  # parse un fichier Java et retourne l'arbre syntaxiqu
 
 def analyze_file(filepath, return_data=False):  # analyse un fichier Java.
     try:
-        tree, root_node = parse_file(filepath)
+        validated_path = validate_path(filepath)
+        tree, root_node = parse_file(validated_path)
         
         names_list = []
         traverse(root_node, names_list)
