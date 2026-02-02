@@ -7,6 +7,7 @@ from ai import get_synonyms
 from dossier_parser import analyser_dossier
 from fastapi import FastAPI, HTTPException
 from parser import analyze_file
+from security import validate_path
 from pydantic import BaseModel
 
 app = FastAPI(title="GlossAI")
@@ -53,8 +54,12 @@ class FileAnalyzeResponse(BaseModel):
 
 @app.get("/api/analyze/file")
 async def analyze_file_route(path: str) -> FileAnalyzeResponse:
-    result = analyze_file(path, return_data=True)
-    return FileAnalyzeResponse(names=Counter(result["names_list"]))
+    try:
+        validated_path = validate_path(path)
+        result = analyze_file(validated_path, return_data=True)
+        return FileAnalyzeResponse(names=Counter(result["names_list"]))
+    except (ValueError, FileNotFoundError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 class FolderAnalyzeResponse(BaseModel):
@@ -64,15 +69,19 @@ class FolderAnalyzeResponse(BaseModel):
 
 @app.get("/api/analyze/folder")
 async def analyze_folder_route(path: str) -> FolderAnalyzeResponse:
-    result = analyser_dossier(path, return_data=True)
-    print(result["resultats_fichiers"][0])
-    return FolderAnalyzeResponse(
-        files={
-            x["fichier"]: FileAnalyzeResponse(names=Counter(x["data"]["names_list"]))
-            for x in result["resultats_fichiers"]
-        },
-        names=result["compteur_global"],
-    )
+    try:
+        validated_path = validate_path(path)
+        result = analyser_dossier(validated_path, return_data=True)
+        # print(result["resultats_fichiers"][0]) # Debug
+        return FolderAnalyzeResponse(
+            files={
+                x["fichier"]: FileAnalyzeResponse(names=Counter(x["data"]["names_list"]))
+                for x in result["resultats_fichiers"]
+            },
+            names=result["compteur_global"],
+        )
+    except (ValueError, FileNotFoundError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.post("/shutdown")
