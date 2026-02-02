@@ -30,7 +30,8 @@ Trouvez la dernière version ainsi que les instructions d'utilisation [ici](http
 Sur Windows (il faut nécéssairement utiliser Powershell):
 - Autoriser l'exécution des scripts avec la commande `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`
 
-### Linux
+### Linux 
+Sur les pc de L'IUT, il faut utiliser la VM Debian_12_Dev pour avoir les droits administrateur.
 ```bash
 git clone https://github.com/embeddings-but3-2025-AIpagnan/GlossAI.git
 cd GlossAI
@@ -50,4 +51,43 @@ python3 -m venv .venv
 npm install
 pip install -r backend/requirements.txt
 npm run dev
+```
+## 📝 File Formats
+
+### Markdown (Table Format)
+```markdown
+# My Glossary
+### Description
+### Export Date:
+### Number of Terms:
+
+| Word | Definition | Synonyms |
+| --- | --- | --- |
+| Example | A representative form | sample, illustration |
+```
+
+### JSON Format
+```json
+{
+  "glossary": {
+    "name": "Scrabble game",
+    "description": "A board game where you use tiles to write words to earn the most points",
+    "exportDate": "2025-12-08T13:18:06.794Z",
+    "termCount": 6
+  },
+  "headers": [
+    "Word",
+    "Definition",
+    "Synonyms"
+  ],
+  "data": [
+    [
+      "Gameboard",
+      "A piece of cardboard painted for the pieces to be played onto it.",
+      [
+        "board"
+      ]
+    ],
+  ]
+}
 ```
