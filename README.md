@@ -14,7 +14,14 @@ Une solution simple et élégante pour explorer et enrichir des glossaires avec 
 
 ## Installation
 
-Trouvez la dernière version ainsi que les instructions d'utilisation [ici](https://github.com/embeddings-but3-2025-AIpagnan/GlossAI/releases/latest).
+Linux: téléchargez le fichier .AppImage, puis double-cliquez dessus pour lancer l'application.
+
+Windows: téléchargez le fichier .msi, lancez-le puis suivez les instructions d'installation standard.
+
+MacOS : téléchargez le fichier .dmg, lancez-le puis suivez les instructions d'installation standard. Avant de lancer l'application, il faut taper la commande "OLLAMA_HOST=http://127.0.0.1:51824 ollama serve" dans le terminal pour changer le port par défaut  pour pouvoir faire fonctionner le back-end.
+
+Trouvez la dernière version ici : [ici](https://github.com/embeddings-but3-2025-AIpagnan/GlossAI/releases/latest).
+
 
 ## Développement
 
